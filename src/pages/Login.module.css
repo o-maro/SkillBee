@@ -1,0 +1,200 @@
+.shell {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #050816, #111928 45%, #1f2937);
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 520px);
+  color: white;
+}
+
+.heroPanel {
+  position: relative;
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroPanel::after {
+  content: '';
+  position: absolute;
+  inset: 15% auto auto 10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%);
+  filter: blur(30px);
+  opacity: 0.9;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.heroContent h1 {
+  margin: 1rem 0 0.75rem;
+  font-size: 2.8rem;
+}
+
+.heroContent p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.formPanel {
+  background: var(--bg-secondary);
+  padding: 4rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-primary);
+  border-radius: 28px;
+  padding: 2.5rem;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+  border: 1px solid var(--border-color);
+}
+
+.formCard h2 {
+  margin: 0 0 0.35rem;
+  color: var(--text-primary);
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0 0 2rem;
+  color: var(--text-secondary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.formGroup input {
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.error {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.submitBtn {
+  border-radius: 14px;
+  border: none;
+  padding: 0.95rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  cursor: pointer;
+  box-shadow: 0 20px 30px rgba(37, 99, 235, 0.25);
+  transition: transform 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.switch a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 950px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .heroPanel {
+    min-height: 320px;
+  }
+
+  .formPanel {
+    padding: 3rem 2rem;
+  }
+
+  .formCard {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .heroPanel {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .heroContent h1 {
+    font-size: 2.2rem;
+  }
+
+  .formPanel {
+    padding: 2.5rem 1.25rem;
+  }
+}
+

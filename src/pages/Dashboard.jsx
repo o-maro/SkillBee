@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { formatCurrency } from '../utils/currency'
 import styles from './Dashboard.module.css'
 
 export const Dashboard = () => {
@@ -163,7 +164,7 @@ export const Dashboard = () => {
                   </div>
                   <div className={styles.timelineBody}>
                     <p>
-                      <strong>Budget:</strong> ${task.budget}
+                      <strong>Budget:</strong> {formatCurrency(task.budget)}
                     </p>
                     {task.notes && (
                       <p className={styles.timelineNotes}>{task.notes}</p>

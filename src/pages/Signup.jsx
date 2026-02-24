@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import styles from './Signup.module.css'
@@ -11,39 +11,13 @@ export const Signup = () => {
   const [phone, setPhone] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [signupSuccess, setSignupSuccess] = useState(false)
-  const { signUp, profile } = useAuth()
+  const { signUp } = useAuth()
   const navigate = useNavigate()
-  const signupRoleRef = useRef(null)
-
-  // Redirect if already logged in or after successful signup
-  useEffect(() => {
-    if (profile) {
-      if (profile.role === 'client') {
-        navigate('/dashboard', { replace: true })
-      } else {
-        navigate('/tasker-dashboard', { replace: true })
-      }
-    } else if (signupSuccess && signupRoleRef.current) {
-      // If profile hasn't loaded yet but signup was successful, wait a bit more
-      // or redirect based on the role used during signup
-      const timeout = setTimeout(() => {
-        if (signupRoleRef.current === 'client') {
-          navigate('/dashboard', { replace: true })
-        } else {
-          navigate('/tasker-dashboard', { replace: true })
-        }
-      }, 2000)
-      return () => clearTimeout(timeout)
-    }
-  }, [profile, signupSuccess, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-    setSignupSuccess(false)
-    signupRoleRef.current = null
 
     if (!email || !password || !fullName) {
       setError('Please fill in all required fields')
@@ -62,11 +36,10 @@ export const Signup = () => {
       setError(signUpError.message || 'Failed to sign up')
       setLoading(false)
     } else if (user) {
-      // Mark signup as successful and store the role
-      signupRoleRef.current = role
-      setSignupSuccess(true)
       setLoading(false)
-      // Profile will be loaded by AuthProvider, redirect will happen via useEffect
+      // After successful signup, send user to the root.
+      // AppGate + route guards will decide the correct dashboard/onboarding.
+      navigate('/', { replace: true })
     }
   }
 

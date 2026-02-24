@@ -10,8 +10,14 @@ export const Navbar = () => {
   const location = useLocation()
 
   const handleSignOut = async () => {
-    await signOut()
-    navigate('/login')
+    try {
+      const { error } = await signOut()
+      if (error) {
+        console.error('Sign out error:', error)
+      }
+    } catch (err) {
+      console.error('Exception during sign out:', err)
+    }
   }
 
   // Show navbar if user is authenticated (even if profile is still loading)
@@ -21,25 +27,27 @@ export const Navbar = () => {
   const isTasker = profile?.role === 'tasker'
 
   // Determine correct routes based on role
+  const homePath = isClient ? "/app-home" : isTasker ? "/tasker-home" : "/app-home"
   const dashboardPath = isClient ? "/dashboard" : isTasker ? "/tasker-dashboard" : "/dashboard"
   const profilePath = isClient ? "/profile" : isTasker ? "/tasker-profile" : "/profile"
   const walletPath = "/wallet"
 
   const isActive = (path) => location.pathname === path
+  const isHomeActive = isActive('/app-home') || isActive('/tasker-home')
   const isDashboardActive = isActive('/dashboard') || isActive('/tasker-dashboard')
   const isProfileActive = isActive('/profile') || isActive('/tasker-profile')
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <Link to="/app-home" className={styles.logo}>
+        <Link to={homePath} className={styles.logo}>
           <span className={styles.logoIcon}>🐝</span>
           SkillBee
         </Link>
         <div className={styles.links}>
           <Link 
-            to="/app-home" 
-            className={`${styles.navLink} ${isActive('/app-home') ? styles.active : ''}`}
+            to={homePath} 
+            className={`${styles.navLink} ${isHomeActive ? styles.active : ''}`}
           >
             Home
           </Link>
@@ -60,6 +68,12 @@ export const Navbar = () => {
             className={`${styles.navLink} ${isActive('/wallet') ? styles.active : ''}`}
           >
             Wallet
+          </Link>
+          <Link 
+            to="/messages"
+            className={`${styles.navLink} ${isActive('/messages') ? styles.active : ''}`}
+          >
+            Messages
           </Link>
           <button 
             onClick={toggleTheme} 

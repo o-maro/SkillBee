@@ -350,6 +350,102 @@
   font-weight: 500;
 }
 
+.ratingBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.ratingText {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.serviceCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.serviceCheckbox:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-light);
+}
+
+.serviceCheckbox input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.serviceCheckbox span {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.toggleInput {
+  width: 48px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggleText {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.ratingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ratingItem {
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.ratingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ratingDate {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.reviewText {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
@@ -383,5 +479,9 @@
 
   .profileCard {
     padding: 1.5rem;
+  }
+
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

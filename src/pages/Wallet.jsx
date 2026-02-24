@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { formatCurrency } from '../utils/currency'
 import styles from './Wallet.module.css'
 
 export const Wallet = () => {
@@ -115,7 +116,7 @@ export const Wallet = () => {
         </div>
         <div className={styles.balanceBadge}>
           <span>Current balance</span>
-          <strong>${wallet?.balance?.toFixed(2) || '0.00'}</strong>
+          <strong>{formatCurrency(wallet?.balance || 0)}</strong>
         </div>
       </section>
 
@@ -160,7 +161,7 @@ export const Wallet = () => {
               <h2>Wallet Snapshot</h2>
               <p>Real‑time overview of your account</p>
             </div>
-            <div className={styles.balancePill}>${wallet?.balance?.toFixed(2) || '0.00'}</div>
+            <div className={styles.balancePill}>{formatCurrency(wallet?.balance || 0)}</div>
           </div>
           <div className={styles.balanceInfo}>
             <div>
@@ -183,7 +184,7 @@ export const Wallet = () => {
           </div>
           <form onSubmit={handleTopUp} className={styles.topUpForm}>
             <div className={styles.amountField}>
-              <span>$</span>
+              <span>UGX</span>
               <input
                 type="number"
                 value={topUpAmount}
@@ -195,14 +196,14 @@ export const Wallet = () => {
               />
             </div>
             <div className={styles.topUpActions}>
-              <button type="button" onClick={() => setTopUpAmount('50')}>
-                +$50
+              <button type="button" onClick={() => setTopUpAmount('50000')}>
+                +UGX 50,000
               </button>
-              <button type="button" onClick={() => setTopUpAmount('100')}>
-                +$100
+              <button type="button" onClick={() => setTopUpAmount('100000')}>
+                +UGX 100,000
               </button>
-              <button type="button" onClick={() => setTopUpAmount('250')}>
-                +$250
+              <button type="button" onClick={() => setTopUpAmount('250000')}>
+                +UGX 250,000
               </button>
             </div>
             <button type="submit" disabled={processing} className={styles.primaryBtn}>
@@ -258,7 +259,7 @@ export const Wallet = () => {
                       }
                     >
                       {transaction.type === 'top_up' || transaction.type === 'payment_received' ? '+' : '-'}
-                      ${Math.abs(transaction.amount).toFixed(2)}
+                      {formatCurrency(Math.abs(transaction.amount))}
                     </span>
                   </div>
                   <div className={styles.timelineCardBody}>

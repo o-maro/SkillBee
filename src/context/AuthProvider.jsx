@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { AuthContext } from "./AuthContext";
 
@@ -7,150 +7,155 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ABOVE useEffect
-  const loadProfile = async (userId) => {
+  /* ===============================
+     LOAD PROFILE (SOURCE OF TRUTH)
+  =============================== */
+  const loadProfile = useCallback(async (userId) => {
     try {
-      const { data, error } = await supabase
+      setLoading(true);
+
+      const { data: userData, error } = await supabase
         .from("users")
         .select("*")
         .eq("id", userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Profile load error:", error);
+        setProfile(null);
+        return null;
+      }
 
-      setProfile(data);
+      setProfile(userData);
+      return userData;
     } catch (err) {
-      console.error("Error loading profile:", err);
+      console.error("Unexpected profile error:", err);
       setProfile(null);
+      return null;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // 2️⃣ useEffect can now safely use loadProfile
+  /* ===============================
+     INITIAL SESSION CHECK
+  =============================== */
   useEffect(() => {
     let mounted = true;
-    
-    // Safety timeout - if loading takes more than 5 seconds, stop loading
-    const timeoutId = setTimeout(() => {
-      if (mounted) {
-        console.warn('Auth loading timeout - stopping loading state');
+
+    const initSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+
+      if (session?.user) {
+        setUser(session.user);
+        await loadProfile(session.user.id);
+      } else {
+        setUser(null);
+        setProfile(null);
         setLoading(false);
       }
-    }, 5000);
-    
-    // Check active session
-    supabase.auth.getSession()
-      .then(({ data: { session }, error }) => {
-        if (!mounted) return;
-        clearTimeout(timeoutId);
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          setLoading(false);
-          return;
-        }
-        
-        setUser(session?.user ?? null);
+    };
 
-        if (session?.user) {
-          loadProfile(session.user.id);
-        } else {
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        if (!mounted) return;
-        clearTimeout(timeoutId);
-        console.error('Error in getSession:', error);
+    initSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+
+      if (session?.user) {
+        setUser(session.user);
+        await loadProfile(session.user.id);
+      } else {
+        setUser(null);
+        setProfile(null);
         setLoading(false);
-      });
-
-    // Listen for auth changes
-    let subscription = null;
-    try {
-      const { data } = supabase.auth.onAuthStateChange(
-        async (_event, session) => {
-          if (!mounted) return;
-          
-          setUser(session?.user ?? null);
-
-          if (session?.user) {
-            await loadProfile(session.user.id);
-          } else {
-            setProfile(null);
-            setLoading(false);
-          }
-        }
-      );
-      subscription = data?.subscription;
-    } catch (error) {
-      console.error('Error setting up auth listener:', error);
-      setLoading(false);
-    }
+      }
+    });
 
     return () => {
       mounted = false;
-      clearTimeout(timeoutId);
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      subscription.unsubscribe();
     };
-  }, []);
+  }, [loadProfile]);
 
+  /* ===============================
+     SIGN UP
+  =============================== */
   const signUp = async (email, password, role, extraData = {}) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-
-    if (error) return { user: null, error };
-
-    if (data?.user) {
-      // Insert profile
-      await supabase.from("users").insert({
-        id: data.user.id,
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        role,
-        ...extraData,
+        password,
+        options: {
+          data: {
+            role,
+            full_name: extraData.full_name || null,
+          },
+        },
       });
 
-      // Create wallet
-      await supabase.from("wallets").insert({
-        user_id: data.user.id,
-        balance: 0,
-      });
+      if (error) throw error;
 
-      await loadProfile(data.user.id);
+      return { user: data.user, error: null };
+    } catch (error) {
+      console.error("Signup error:", error);
+      return { user: null, error };
     }
-
-    return { user: data.user, error: null };
   };
 
+  /* ===============================
+     SIGN IN
+  =============================== */
   const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (!error && data?.user) {
-      await loadProfile(data.user.id);
+      if (error) throw error;
+
+      return { user: data.user, error: null };
+    } catch (error) {
+      console.error("Signin error:", error);
+      return { user: null, error };
     }
-
-    return { user: data.user, error };
   };
 
+  /* ===============================
+     SIGN OUT
+  =============================== */
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
 
-    if (!error) {
       setUser(null);
       setProfile(null);
-    }
 
-    return { error };
+      return { error: null };
+    } catch (error) {
+      console.error("Signout error:", error);
+      return { error };
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, profile, loading, signUp, signIn, signOut, loadProfile }}
+      value={{
+        user,
+        profile,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        loadProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>

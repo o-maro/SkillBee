@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-export const RequireRole = ({ children, allowedRoles }) => {
+export const RequireRole = ({ children, allowedRoles, requireVerification = false }) => {
   const { profile, loading, user } = useAuth()
 
   // Wait for auth to finish loading
@@ -23,14 +23,14 @@ export const RequireRole = ({ children, allowedRoles }) => {
 
   // Check if user's role is allowed
   if (!allowedRoles.includes(profile.role)) {
-    // Redirect to appropriate dashboard based on role
-    if (profile.role === 'client') {
-      return <Navigate to="/dashboard" replace />
-    } else if (profile.role === 'tasker') {
-      return <Navigate to="/tasker-dashboard" replace />
-    } else {
-      // Unknown role, redirect to app-home
-      return <Navigate to="/app-home" replace />
+    // Redirect to root - AppGate will handle routing based on role and verification status
+    return <Navigate to="/" replace />
+  }
+
+  // For taskers, check verification status if required
+  if (requireVerification && profile.role === 'tasker') {
+    if (profile.verification_status !== 'approved') {
+      return <Navigate to="/tasker-onboarding" replace />
     }
   }
 

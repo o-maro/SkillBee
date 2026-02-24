@@ -1,19 +1,19 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { supabase } from '../utils/supabaseClient'
+import { getTaskerBookings, getTaskerRatings } from '../utils/taskerApi'
+import { TaskCard } from '../components/TaskCard'
+import { RatingStars } from '../components/RatingStars'
+import { formatCurrency } from '../utils/currency'
 import styles from './TaskerDashboard.module.css'
 
 export const TaskerDashboard = () => {
   const { profile, loading: authLoading } = useAuth()
-  const [stats, setStats] = useState({
-    totalTasks: 0,
-    pendingTasks: 0,
-    activeTasks: 0,
-    completedTasks: 0,
-  })
-  const [availableTasks, setAvailableTasks] = useState([])
-  const [myTasks, setMyTasks] = useState([])
+  const [upcomingTasks, setUpcomingTasks] = useState([])
+  const [inProgressTasks, setInProgressTasks] = useState([])
+  const [completedTasks, setCompletedTasks] = useState([])
+  const [ratings, setRatings] = useState([])
+  const [totalEarnings, setTotalEarnings] = useState(0)
   const [loading, setLoading] = useState(true)
 
   const loadDashboardData = useCallback(async () => {
@@ -23,34 +23,48 @@ export const TaskerDashboard = () => {
     }
 
     try {
-      // Get my assigned tasks
-      const { data: assignedTasks, error: assignedError } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('tasker_id', profile.id)
-        .order('created_at', { ascending: false })
+      // Get all tasker bookings
+      const { data: bookings, error: bookingsError } = await getTaskerBookings(profile.id)
+      if (bookingsError) throw bookingsError
 
-      if (assignedError) throw assignedError
+      // Get ratings
+      const { data: ratingsData, error: ratingsError } = await getTaskerRatings(profile.id)
+      if (ratingsError) throw ratingsError
 
-      // Get available tasks (pending, not assigned to anyone)
-      const { data: available, error: availableError } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('status', 'pending')
-        .is('tasker_id', null)
-        .order('created_at', { ascending: false })
-        .limit(10)
+      setRatings(ratingsData || [])
 
-      if (availableError) throw availableError
+      // Categorize tasks
+      const upcoming = (bookings || []).filter(
+        (task) =>
+          (task.status === 'pending' || task.status === 'accepted' || task.status === 'assigned') &&
+          task.tasker_id === profile.id
+      )
+      const inProgress = (bookings || []).filter(
+        (task) => task.status === 'in_progress' && task.tasker_id === profile.id
+      )
+      const completed = (bookings || []).filter(
+        (task) => task.status === 'completed' && task.tasker_id === profile.id
+      )
 
-      const total = assignedTasks?.length || 0
-      const pending = assignedTasks?.filter((t) => t.status === 'pending').length || 0
-      const active = assignedTasks?.filter((t) => t.status === 'in_progress').length || 0
-      const completed = assignedTasks?.filter((t) => t.status === 'completed').length || 0
+      // Add ratings to completed tasks
+      const completedWithRatings = completed.map((task) => {
+        const taskRating = (ratingsData || []).find((r) => r.task_id === task.id)
+        return {
+          ...task,
+          rating: taskRating?.score,
+          review: taskRating?.review,
+        }
+      })
 
-      setStats({ totalTasks: total, pendingTasks: pending, activeTasks: active, completedTasks: completed })
-      setAvailableTasks(available || [])
-      setMyTasks(assignedTasks?.slice(0, 5) || [])
+      // Calculate total earnings from completed tasks
+      const earnings = completed.reduce((sum, task) => {
+        return sum + (parseFloat(task.budget) || 0)
+      }, 0)
+
+      setUpcomingTasks(upcoming)
+      setInProgressTasks(inProgress)
+      setCompletedTasks(completedWithRatings)
+      setTotalEarnings(earnings)
     } catch (error) {
       console.error('Error loading dashboard data:', error)
     } finally {
@@ -59,39 +73,20 @@ export const TaskerDashboard = () => {
   }, [profile])
 
   useEffect(() => {
-    // Wait for auth to finish loading before trying to load dashboard data
     if (authLoading) {
       return
     }
-    
+
     if (profile) {
       loadDashboardData()
     } else {
-      // If auth is done loading but profile is null, stop loading
       setLoading(false)
     }
   }, [profile, loadDashboardData, authLoading])
 
-  const acceptTask = async (taskId) => {
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({
-          tasker_id: profile.id,
-          status: 'assigned',
-        })
-        .eq('id', taskId)
-
-      if (error) throw error
-      loadDashboardData()
-    } catch (error) {
-      console.error('Error accepting task:', error)
-      alert('Failed to accept task. Please try again.')
-    }
-  }
-
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
+      const { supabase } = await import('../utils/supabaseClient')
       const { error } = await supabase
         .from('bookings')
         .update({ status: newStatus })
@@ -110,105 +105,133 @@ export const TaskerDashboard = () => {
     return <div className={styles.loading}>Loading...</div>
   }
 
+  // Calculate average rating
+  const avgRating =
+    ratings.length > 0
+      ? ratings.reduce((sum, r) => sum + (r.score || 0), 0) / ratings.length
+      : 0
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Welcome back, {profile?.full_name || 'Tasker'}!</h1>
+        <h1>Tasker Dashboard</h1>
+        <p className={styles.subtitle}>Manage your tasks and track your progress</p>
       </div>
 
-      <div className={styles.stats}>
-        <div className={styles.statCard}>
-          <h3>Total Tasks</h3>
-          <p className={styles.statNumber}>{stats.totalTasks}</p>
+      <div className={styles.summary}>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryIcon}>📅</div>
+          <div>
+            <p className={styles.summaryLabel}>Upcoming Tasks</p>
+            <p className={styles.summaryValue}>{upcomingTasks.length}</p>
+          </div>
         </div>
-        <div className={styles.statCard}>
-          <h3>Pending</h3>
-          <p className={styles.statNumber}>{stats.pendingTasks}</p>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryIcon}>⚡️</div>
+          <div>
+            <p className={styles.summaryLabel}>In Progress</p>
+            <p className={styles.summaryValue}>{inProgressTasks.length}</p>
+          </div>
         </div>
-        <div className={styles.statCard}>
-          <h3>In Progress</h3>
-          <p className={styles.statNumber}>{stats.activeTasks}</p>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryIcon}>✅</div>
+          <div>
+            <p className={styles.summaryLabel}>Completed</p>
+            <p className={styles.summaryValue}>{completedTasks.length}</p>
+          </div>
         </div>
-        <div className={styles.statCard}>
-          <h3>Completed</h3>
-          <p className={styles.statNumber}>{stats.completedTasks}</p>
+        <div className={styles.summaryCard}>
+          <div className={styles.summaryIcon}>💰</div>
+          <div>
+            <p className={styles.summaryLabel}>Total Earnings</p>
+            <p className={styles.summaryValue}>{formatCurrency(totalEarnings)}</p>
+          </div>
         </div>
       </div>
 
       <div className={styles.sections}>
-        <div className={styles.section}>
-          <h2>Available Tasks</h2>
-          {availableTasks.length === 0 ? (
-            <p className={styles.empty}>No available tasks at the moment.</p>
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2>Upcoming / Scheduled Tasks</h2>
+            <Link to="/task-requests" className={styles.viewAllLink}>
+              View all requests →
+            </Link>
+          </div>
+          {upcomingTasks.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No upcoming tasks scheduled.</p>
+              <Link to="/task-requests" className={styles.emptyLink}>
+                Browse available tasks
+              </Link>
+            </div>
           ) : (
-            <div className={styles.taskList}>
-              {availableTasks.map((task) => (
-                <div key={task.id} className={styles.taskCard}>
-                  <div className={styles.taskHeader}>
-                    <h3>{task.service_type}</h3>
-                    <span className={styles.budget}>${task.budget}</span>
-                  </div>
-                  <p className={styles.location}>📍 {task.location}</p>
-                  {task.notes && <p className={styles.notes}>{task.notes}</p>}
-                  <button
-                    onClick={() => acceptTask(task.id)}
-                    className={styles.acceptBtn}
-                  >
-                    Accept Task
-                  </button>
-                </div>
+            <div className={styles.taskGrid}>
+              {upcomingTasks.map((task) => (
+                <TaskCard key={task.id} task={task} showActions={false} showMessage={true} />
               ))}
             </div>
           )}
-        </div>
+        </section>
 
-        <div className={styles.section}>
-          <h2>My Tasks</h2>
-          {myTasks.length === 0 ? (
-            <p className={styles.empty}>You haven't accepted any tasks yet.</p>
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2>Tasks In Progress</h2>
+          </div>
+          {inProgressTasks.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No tasks currently in progress.</p>
+            </div>
           ) : (
-            <div className={styles.taskList}>
-              {myTasks.map((task) => (
-                <div key={task.id} className={styles.taskCard}>
-                  <div className={styles.taskHeader}>
-                    <h3>{task.service_type}</h3>
-                    <span className={`${styles.status} ${styles[task.status]}`}>
-                      {task.status}
-                    </span>
-                  </div>
-                  <p className={styles.budget}>Budget: ${task.budget}</p>
-                  <p className={styles.location}>📍 {task.location}</p>
-                  <div className={styles.actions}>
-                    {task.status === 'assigned' && (
-                      <>
-                        <button
-                          onClick={() => updateTaskStatus(task.id, 'in_progress')}
-                          className={styles.actionBtn}
-                        >
-                          Start Task
-                        </button>
-                        <button
-                          onClick={() => updateTaskStatus(task.id, 'pending')}
-                          className={styles.declineBtn}
-                        >
-                          Decline
-                        </button>
-                      </>
-                    )}
-                    {task.status === 'in_progress' && (
-                      <button
-                        onClick={() => updateTaskStatus(task.id, 'completed')}
-                        className={styles.completeBtn}
-                      >
-                        Mark Complete
-                      </button>
-                    )}
-                  </div>
-                </div>
+            <div className={styles.taskGrid}>
+              {inProgressTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  showActions={true}
+                  showMessage={true}
+                  onComplete={(id) => updateTaskStatus(id, 'completed')}
+                />
               ))}
             </div>
           )}
-        </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2>Completed Tasks</h2>
+            {avgRating > 0 && (
+              <div className={styles.ratingSummary}>
+                <RatingStars rating={avgRating} />
+                <span className={styles.ratingText}>
+                  {avgRating.toFixed(1)} ({ratings.length} reviews)
+                </span>
+              </div>
+            )}
+          </div>
+          {completedTasks.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No completed tasks yet.</p>
+            </div>
+          ) : (
+            <div className={styles.taskGrid}>
+              {completedTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  showRating={true}
+                  showActions={false}
+                />
+              ))}
+            </div>
+          )}
+          {completedTasks.length > 0 && (
+            <div className={styles.earningsSummary}>
+              <p>
+                <strong>Total Earnings from Completed Tasks:</strong> {formatCurrency(totalEarnings)}
+              </p>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   )

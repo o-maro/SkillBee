@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { formatCurrency } from '../utils/currency'
 import styles from './Tasks.module.css'
 
 export const Tasks = () => {
   const { profile } = useAuth()
+  const navigate = useNavigate()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -88,7 +91,7 @@ export const Tasks = () => {
                 </span>
               </div>
               <div className={styles.taskDetails}>
-                <p><strong>Budget:</strong> ${task.budget}</p>
+                <p><strong>Budget:</strong> {formatCurrency(task.budget)}</p>
                 <p><strong>Location:</strong> {task.location}</p>
                 {task.tasker_id && (
                   <p><strong>Tasker ID:</strong> {task.tasker_id}</p>
@@ -98,6 +101,16 @@ export const Tasks = () => {
                 )}
                 <p><strong>Created:</strong> {new Date(task.created_at).toLocaleDateString()}</p>
               </div>
+              {task.tasker_id && (
+                <div className={styles.taskActions}>
+                  <button
+                    className={styles.messageButton}
+                    onClick={() => navigate('/messages', { state: { bookingId: task.id } })}
+                  >
+                    💬 Message Tasker
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

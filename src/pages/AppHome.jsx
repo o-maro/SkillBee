@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { formatCurrency } from '../utils/currency'
 import styles from './AppHome.module.css'
 
 const featuredServices = [
@@ -38,23 +39,39 @@ const featuredServices = [
 ]
 
 export const AppHome = () => {
-  const { profile, loading: authLoading } = useAuth()
+  const auth = useAuth()
+  const navigate = useNavigate()
+  
+  // Safe fallbacks for auth context
+  const profile = auth?.profile || null
+  const authLoading = auth?.loading || false
+  
   const [tasks, setTasks] = useState([])
   const [filteredTasks, setFilteredTasks] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, pending, in_progress, completed
 
+  // Debug logging
+  console.log('Auth values:', auth)
+  console.log('Profile:', profile, 'Auth Loading:', authLoading)
+  console.log('Component state:', { loading, tasks: tasks.length, filteredTasks: filteredTasks.length })
+
   const isClient = profile?.role === 'client'
   const isTasker = profile?.role === 'tasker'
+  const userName = profile?.full_name || 'User'
+
+  // No redirects - guards handle routing
 
   const loadTasks = useCallback(async () => {
     if (!profile) {
+      console.log('No profile, skipping task load')
       setLoading(false)
       return
     }
 
     try {
+      console.log('Loading tasks for profile:', profile)
       const isClientRole = profile.role === 'client'
       const isTaskerRole = profile.role === 'tasker'
       let query
@@ -76,11 +93,13 @@ export const AppHome = () => {
           .is('tasker_id', null)
           .order('created_at', { ascending: false })
       } else {
+        console.log('Unknown role:', profile.role)
         setLoading(false)
         return
       }
 
       const { data, error } = await query
+      console.log('Tasks query result:', { data, error })
 
       if (error) throw error
       setTasks(data || [])
@@ -93,19 +112,21 @@ export const AppHome = () => {
   }, [profile])
 
   useEffect(() => {
-    // Wait for auth to finish loading before trying to load tasks
+    console.log('Auth loading:', authLoading, 'Profile:', profile)
+    
     if (authLoading) {
+      setLoading(true)
       return
     }
     
-    // If profile exists, load tasks
-    if (profile) {
-      loadTasks()
-    } else {
-      // If auth is done loading but profile is null, stop loading
+    if (!profile) {
       setLoading(false)
+      setTasks([])
+      return
     }
-  }, [profile, loadTasks, authLoading])
+    
+    loadTasks()
+  }, [profile, authLoading, loadTasks])
 
   // Filter tasks based on search query and status filter
   useEffect(() => {
@@ -160,9 +181,28 @@ export const AppHome = () => {
 
   return (
     <div className={styles.container}>
+      {/* Temporary debug info - you can remove this later */}
+      <div style={{
+        background: '#f8f9fa', 
+        padding: '12px', 
+        marginBottom: '20px', 
+        borderRadius: '8px',
+        border: '1px solid #e9ecef',
+        fontSize: '12px',
+        fontFamily: 'monospace'
+      }}>
+        <strong>Debug Info:</strong><br />
+        Auth Loading: {authLoading ? 'Yes' : 'No'}<br />
+        Profile: {profile ? `Exists (role: ${profile.role})` : 'None'}<br />
+        Tasks Count: {tasks.length}<br />
+        Filtered Tasks Count: {filteredTasks.length}<br />
+        Search Query: "{searchQuery}"<br />
+        Filter: {filter}
+      </div>
+
       <div className={styles.header}>
         <div>
-          <h1>Welcome back, {profile?.full_name || 'User'}!</h1>
+          <h1>Welcome back, {userName}!</h1>
           <p className={styles.subtitle}>
             {isClient
               ? 'Get your first task done with trusted local pros'
@@ -280,7 +320,7 @@ export const AppHome = () => {
               <div key={task.id} className={styles.taskCard}>
                 <div className={styles.taskHeader}>
                   <h3>{task.service_type}</h3>
-                  <span className={styles.budget}>${task.budget}</span>
+                  <span className={styles.budget}>{formatCurrency(task.budget)}</span>
                 </div>
                 <div className={styles.taskDetails}>
                   <div className={styles.detailItem}>
@@ -326,4 +366,3 @@ export const AppHome = () => {
     </div>
   )
 }
-

@@ -1,22 +1,9 @@
-import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import styles from './Home.module.css'
 
 export const Home = () => {
-  const { profile } = useAuth()
-  const navigate = useNavigate()
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (profile) {
-      if (profile.role === 'client') {
-        navigate('/dashboard')
-      } else {
-        navigate('/tasker-dashboard')
-      }
-    }
-  }, [profile, navigate])
+  // Home page should always render - AppGate handles routing decisions
 
   return (
     <div className={styles.container}>

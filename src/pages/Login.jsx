@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import styles from './Login.module.css'
@@ -8,51 +8,13 @@ export const Login = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signIn, profile, user, loading: authLoading } = useAuth()
+  const { signIn, loadProfile } = useAuth()
   const navigate = useNavigate()
-  const justLoggedInRef = useRef(false)
-  const timeoutRef = useRef(null)
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = null
-      }
-    }
-  }, [])
-
-  // Redirect if already logged in or after successful login
-  useEffect(() => {
-    // If user exists and auth is done loading, navigate
-    // We navigate even if profile is null - RequireAuth will handle auth check
-    if (user && !authLoading && justLoggedInRef.current) {
-      // Clear any pending timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = null
-      }
-      // Reset the ref flag - loading will be cleared by timeout or on unmount
-      justLoggedInRef.current = false
-      navigate('/app-home', { replace: true })
-    } else if (profile && user && !justLoggedInRef.current) {
-      // If already logged in (not from this login), redirect
-      navigate('/app-home', { replace: true })
-    }
-  }, [profile, user, authLoading, navigate])  
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-    justLoggedInRef.current = true
-
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = null
-    }
 
     try {
       const { user: signedInUser, error: signInError } = await signIn(email, password)
@@ -60,33 +22,34 @@ export const Login = () => {
       if (signInError) {
         setError(signInError.message || 'Failed to log in')
         setLoading(false)
-        justLoggedInRef.current = false
         return
       }
 
       if (signedInUser) {
-        // Profile will be loaded by AuthProvider's signIn function and onAuthStateChange
-        // The useEffect above will handle redirect when authLoading becomes false
-        // Set a timeout as fallback in case something goes wrong
-        timeoutRef.current = setTimeout(() => {
-          if (justLoggedInRef.current) {
-            // If still waiting after 5 seconds, redirect anyway
-            // The RequireAuth component will handle authentication check
-            navigate('/app-home', { replace: true })
-            setLoading(false)
-            justLoggedInRef.current = false
-            timeoutRef.current = null
+        // Explicitly load profile and use result for redirect (avoids race with onAuthStateChange)
+        const userProfile = await loadProfile(signedInUser.id)
+        
+        if (userProfile) {
+          if (userProfile.role === 'admin') {
+            navigate('/admin/dashboard', { replace: true })
+          } else if (userProfile.role === 'tasker') {
+            if (userProfile.verification_status === 'approved') {
+              navigate('/tasker-dashboard', { replace: true })
+            } else {
+              navigate('/tasker-onboarding', { replace: true })
+            }
+          } else {
+            navigate('/dashboard', { replace: true })
           }
-        }, 5000)
+        } else {
+          // Profile not found - AppGate will handle routing
+          navigate('/', { replace: true })
+        }
+        setLoading(false)
       }
     } catch {
       setError('An unexpected error occurred. Please try again.')
       setLoading(false)
-      justLoggedInRef.current = false
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = null
-      }
     }
   }
 

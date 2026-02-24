@@ -74,7 +74,8 @@ export const Book = () => {
         budget: parseFloat(formData.budget),
         location: formData.location,
         notes: formData.notes || null,
-        status: selectedTasker ? 'assigned' : 'pending',
+        // When a tasker is selected, create as pending so they can accept/decline
+        status: 'pending',
         tasker_id: selectedTasker || null,
       }
 

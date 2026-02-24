@@ -1,0 +1,47 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star {
+  color: #fbbf24;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.emptyStar {
+  color: #d1d5db;
+  opacity: 0.5;
+}
+
+.halfStar {
+  background: linear-gradient(90deg, #fbbf24 50%, #d1d5db 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ratingText {
+  margin-left: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.container.small .star {
+  font-size: 0.9rem;
+}
+
+.container.small .ratingText {
+  font-size: 0.8rem;
+}
+
+.container.large .star {
+  font-size: 1.5rem;
+}
+
+.container.large .ratingText {
+  font-size: 1rem;
+}
+

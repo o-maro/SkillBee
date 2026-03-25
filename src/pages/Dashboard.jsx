@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { formatCurrency } from '../utils/currency'
+import MapView from "../components/MapView";
 import styles from './Dashboard.module.css'
 
 export const Dashboard = () => {
@@ -62,6 +63,24 @@ export const Dashboard = () => {
       setLoading(false)
     }
   }, [profile, loadDashboardData, authLoading])
+
+  useEffect(() => {
+    if (!profile) return;
+  
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+  
+        await supabase
+          .from("users")
+          .update({
+            latitude: latitude,
+            longitude: longitude
+          })
+          .eq("id", profile.id);
+      });
+    }
+  }, [profile]);
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>
@@ -123,6 +142,15 @@ export const Dashboard = () => {
             </div>
           </div>
         ))}
+      </section>
+
+      <section className={styles.mapSection}>
+        <div className={styles.mapHeader}>
+          <h2>Nearby Taskers</h2>
+          <p>Find skilled taskers close to your location.</p>
+        </div>
+
+        <MapView />
       </section>
 
       <section className={styles.activitySection}>

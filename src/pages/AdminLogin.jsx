@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './AdminLogin.module.css'
 
 export const AdminLogin = () => {
@@ -62,50 +66,47 @@ export const AdminLogin = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
+      <Card className={styles.card}>
         <div className={styles.header}>
-          <h1>🔐 Admin Login</h1>
-          <p className={styles.subtitle}>Sign in to access the admin dashboard</p>
+          <Badge variant="danger" className={styles.adminBadge}>Restricted Access</Badge>
+          <h1>Admin Portal</h1>
+          <p className={styles.subtitle}>Sign in to access the system dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@skillbee.com"
-              required
-              autoComplete="email"
-            />
-          </div>
+          <Input
+            label="Email"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin@skillbee.com"
+            required
+            autoComplete="email"
+          />
 
-          <div className={styles.formGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              autoComplete="current-password"
-            />
-          </div>
+          <Input
+            label="Password"
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            required
+            autoComplete="current-password"
+          />
 
           {error && <div className={styles.error}>{error}</div>}
 
-          <button type="submit" disabled={loginLoading} className={styles.submitBtn}>
+          <Button type="submit" disabled={loginLoading} className={styles.submitBtn}>
             {loginLoading ? 'Signing in...' : 'Sign In'}
-          </button>
+          </Button>
         </form>
 
         <div className={styles.footer}>
           <p>Not an admin? <a href="/login">Go to regular login</a></p>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

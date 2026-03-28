@@ -1,13 +1,17 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { formatCurrency } from '../utils/currency'
 import MapView from "../components/MapView";
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './Dashboard.module.css'
 
 export const Dashboard = () => {
   const { profile, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalTasks: 0,
     activeTasks: 0,
@@ -145,29 +149,40 @@ useEffect(() => {
     },
   ]
 
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'pending': return 'warning'
+      case 'in_progress': return 'primary'
+      case 'completed': return 'success'
+      default: return 'neutral'
+    }
+  }
+
   return (
     <div className={styles.container}>
-      <section className={styles.hero}>
-        <div className={styles.heroText}>
-          <p className={styles.heroBadge}>Client Dashboard</p>
-          <h1>Welcome back, {profile?.full_name || 'User'}!</h1>
-          <p>
-            Track every booking, stay on top of progress, and keep your to‑do list moving.
-          </p>
+      <Card className={styles.hero} style={{ padding: 0 }}>
+        <div className={styles.heroInner}>
+          <div className={styles.heroText}>
+            <Badge variant="secondary" className={styles.heroBadge}>Client Dashboard</Badge>
+            <h1>Welcome back, {profile?.full_name || 'User'}!</h1>
+            <p>
+              Track every booking, stay on top of progress, and keep your to‑do list moving.
+            </p>
+          </div>
+          <div className={styles.heroActions}>
+            <Button variant="primary" onClick={() => navigate('/book')} className={styles.fullWidth}>
+              Book a task
+            </Button>
+            <Button variant="secondary" onClick={() => navigate('/tasks')} className={styles.fullWidth}>
+              View your tasks
+            </Button>
+          </div>
         </div>
-        <div className={styles.heroActions}>
-          <Link to="/book" className={styles.heroButtonPrimary}>
-            Book a task
-          </Link>
-          <Link to="/tasks" className={styles.heroButtonSecondary}>
-            View your tasks
-          </Link>
-        </div>
-      </section>
+      </Card>
 
       <section className={styles.statsGrid}>
         {statHighlights.map(({ id, label, value, icon, accent }) => (
-          <div key={id} className={`${styles.statCard} ${accent}`}>
+          <Card key={id} className={`${styles.statCard} ${accent}`} hoverable>
             <div className={styles.statIcon}>{icon}</div>
             <div>
               <p className={styles.statLabel}>{label}</p>
@@ -175,11 +190,11 @@ useEffect(() => {
                 {value}
               </p>
             </div>
-          </div>
+          </Card>
         ))}
       </section>
 
-      <section className={styles.mapSection}>
+      <Card className={styles.mapSection}>
         <div className={styles.mapHeader}>
           <h2>Nearby Taskers</h2>
           <p>Find skilled taskers close to your location.</p>
@@ -189,9 +204,9 @@ useEffect(() => {
           taskers={taskers}
           activeUserLocation={activeUserLocation}
         />
-      </section>
+      </Card>
 
-      <section className={styles.activitySection}>
+      <Card className={styles.activitySection}>
         <div className={styles.activityHeader}>
           <div>
             <h2>Recent activity</h2>
@@ -224,9 +239,9 @@ useEffect(() => {
                         {new Date(task.created_at).toLocaleDateString()} • {task.location}
                       </p>
                     </div>
-                    <span className={`${styles.status} ${styles[task.status]}`}>
+                    <Badge variant={getStatusVariant(task.status)}>
                       {task.status.replace('_', ' ')}
-                    </span>
+                    </Badge>
                   </div>
                   <div className={styles.timelineBody}>
                     <p>
@@ -246,7 +261,7 @@ useEffect(() => {
             ))}
           </div>
         )}
-      </section>
+      </Card>
     </div>
   )
 }

@@ -2,158 +2,140 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  background-color: transparent;
+  min-height: calc(100vh - 80px);
 }
 
-.container h1 {
-  margin: 0 0 2rem 0;
-  color: #333;
+.filtersSection {
+  margin-bottom: 2rem;
 }
 
 .filters {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .filters button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 4px;
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  text-transform: capitalize;
 }
 
 .filters button:hover {
-  border-color: #2563eb;
-  color: #2563eb;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: var(--bg-secondary);
+  transform: translateY(-1px);
 }
 
 .filters button.active {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: white;
-  border-color: #2563eb;
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .taskList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
 .taskCard {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s;
-}
-
-.taskCard:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
 .taskHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .taskHeader h3 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   text-transform: capitalize;
-}
-
-.status {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.status.pending {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.status.assigned {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.status.in_progress {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.status.completed {
-  background-color: #d1fae5;
-  color: #065f46;
+  font-size: 1.35rem;
+  font-weight: var(--font-weight-bold);
 }
 
 .taskDetails {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  flex: 1;
 }
 
-.taskDetails p {
-  margin: 0;
-  color: #666;
-  font-size: 0.9rem;
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.taskDetails strong {
-  color: #333;
+.detailLabel {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.95rem;
+  min-width: 80px;
+}
+
+.detailValue {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  text-align: right;
+  flex: 1;
 }
 
 .empty {
   text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.empty p {
-  color: #666;
-  font-size: 1.1rem;
+.emptyText {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-medium);
+  margin: 0;
 }
 
 .loading {
   text-align: center;
-  padding: 2rem;
-  color: #666;
+  padding: 5rem 2rem;
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-medium);
 }
 
 .taskActions {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-color);
 }
 
 .messageButton {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.messageButton:hover {
-  background-color: #1d4ed8;
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
 }
 

@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
 import styles from './Book.module.css'
 
 export const Book = () => {
@@ -98,110 +102,125 @@ export const Book = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Book a Task</h1>
+      <PageHeader 
+        title="Book a Task" 
+        subtitle="Tell us what you need help with and we'll match you with the best Taskers available."
+      />
 
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.formGroup}>
-          <label htmlFor="service_type">Service Type *</label>
-          <select
-            id="service_type"
-            name="service_type"
-            value={formData.service_type}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a service</option>
-            <option value="cleaning">Cleaning</option>
-            <option value="plumbing">Plumbing</option>
-            <option value="electrical">Electrical</option>
-            <option value="carpentry">Carpentry</option>
-            <option value="painting">Painting</option>
-            <option value="gardening">Gardening</option>
-            <option value="moving">Moving</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="budget">Budget ($) *</label>
-          <input
-            id="budget"
-            type="number"
-            name="budget"
-            value={formData.budget}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="location">Location *</label>
-          <input
-            id="location"
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="Enter your address or location"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="notes">Notes</label>
-          <textarea
-            id="notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows="4"
-            placeholder="Additional details about the task..."
-          />
-        </div>
-
-        <div className={styles.searchSection}>
-          <button
-            type="button"
-            onClick={searchTaskers}
-            disabled={searching || !formData.location}
-            className={styles.searchBtn}
-          >
-            {searching ? 'Searching...' : 'Find Available Taskers'}
-          </button>
-        </div>
-
-        {availableTaskers.length > 0 && (
-          <div className={styles.taskersList}>
-            <h3>Available Taskers</h3>
-            {availableTaskers.map((tasker) => (
-              <div
-                key={tasker.id}
-                className={`${styles.taskerCard} ${
-                  selectedTasker === tasker.id ? styles.selected : ''
-                }`}
-                onClick={() => setSelectedTasker(tasker.id)}
-              >
-                <div>
-                  <h4>{tasker.full_name || 'Tasker'}</h4>
-                  <p>Distance: {tasker.distance ? `${tasker.distance.toFixed(2)} km` : 'N/A'}</p>
-                  {tasker.rating && <p>Rating: {tasker.rating}/5</p>}
-                </div>
-                {selectedTasker === tasker.id && (
-                  <span className={styles.checkmark}>✓</span>
-                )}
-              </div>
-            ))}
+      <Card className={styles.formCard}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="service_type">Service Type *</label>
+            <select
+              id="service_type"
+              name="service_type"
+              value={formData.service_type}
+              onChange={handleChange}
+              required
+              className={styles.select}
+            >
+              <option value="">Select a service</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrical">Electrical</option>
+              <option value="carpentry">Carpentry</option>
+              <option value="painting">Painting</option>
+              <option value="gardening">Gardening</option>
+              <option value="moving">Moving</option>
+              <option value="other">Other</option>
+            </select>
           </div>
-        )}
 
-        {error && <div className={styles.error}>{error}</div>}
+          <div className={styles.formRow}>
+            <Input
+              label="Budget ($) *"
+              id="budget"
+              type="number"
+              name="budget"
+              value={formData.budget}
+              onChange={handleChange}
+              min="0"
+              step="0.01"
+              required
+            />
 
-        <button type="submit" disabled={loading} className={styles.submitBtn}>
-          {loading ? 'Creating Booking...' : 'Create Booking'}
-        </button>
-      </form>
+            <Input
+              label="Location *"
+              id="location"
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Enter your address or location"
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="notes">Notes</label>
+            <textarea
+              id="notes"
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              rows="4"
+              placeholder="Additional details about the task..."
+              className={styles.textarea}
+            />
+          </div>
+
+          <div className={styles.searchSection}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={searchTaskers}
+              disabled={searching || !formData.location}
+              className={styles.searchBtn}
+            >
+              {searching ? 'Searching...' : 'Find Available Taskers'}
+            </Button>
+          </div>
+
+          {availableTaskers.length > 0 && (
+            <div className={styles.taskersList}>
+              <h3>Available Taskers</h3>
+              <div className={styles.taskerGrid}>
+                {availableTaskers.map((tasker) => (
+                  <Card
+                    key={tasker.id}
+                    hoverable
+                    className={`${styles.taskerCard} ${selectedTasker === tasker.id ? styles.selected : ''}`}
+                    onClick={() => setSelectedTasker(tasker.id)}
+                    style={{ padding: '1rem', cursor: 'pointer' }}
+                  >
+                    <div>
+                      <h4 className={styles.taskerName}>{tasker.full_name || 'Tasker'}</h4>
+                      <p className={styles.taskerDetail}>
+                        Distance: {tasker.distance ? `${tasker.distance.toFixed(2)} km` : 'N/A'}
+                      </p>
+                      {tasker.rating && <p className={styles.taskerDetail}>Rating: {tasker.rating}/5</p>}
+                    </div>
+                    {selectedTasker === tasker.id && (
+                      <span className={styles.checkmark}>✓</span>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {error && <div className={styles.error}>{error}</div>}
+
+          <Button 
+            variant="primary" 
+            type="submit" 
+            disabled={loading} 
+            className={styles.submitBtn}
+          >
+            {loading ? 'Creating Booking...' : 'Create Booking'}
+          </Button>
+        </form>
+      </Card>
     </div>
   )
 }

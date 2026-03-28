@@ -2,39 +2,12 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: var(--bg-secondary);
+  background-color: transparent;
   min-height: calc(100vh - 80px);
 }
 
-.header {
-  margin-bottom: 2.5rem;
-}
-
-.header h1 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-primary);
-  font-size: 2.25rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.subtitle {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
 .profileSection {
-  background: var(--bg-primary);
-  border-radius: 16px;
-  padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 1px solid var(--border-color);
 }
 
 .avatarSection {
@@ -48,7 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .avatarWrapper {
@@ -59,7 +32,7 @@
   overflow: hidden;
   border: 4px solid var(--primary-color);
   box-shadow: 0 4px 12px var(--shadow-color);
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-md);
 }
 
 .avatarWrapper:hover {
@@ -81,7 +54,7 @@
   justify-content: center;
   color: white;
   font-size: 3.5rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .uploadOverlay {
@@ -95,30 +68,11 @@
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .avatarButton {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  border: none;
-  padding: 0.625rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-}
-
-.avatarButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-}
-
-.avatarButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  border-radius: 999px !important;
 }
 
 .profileInfo {
@@ -130,7 +84,7 @@
   margin: 0 0 0.5rem 0;
   color: var(--text-primary);
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .email {
@@ -143,27 +97,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.95rem;
+  padding: 0.4rem 1rem !important;
 }
 
 .roleIcon {
   font-size: 1.1rem;
-}
-
-.rateBadge {
-  display: inline-block;
-  margin-top: 0.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 0.95rem;
 }
 
 .statsSection {
@@ -174,20 +115,10 @@
 }
 
 .statCard {
-  background: var(--bg-primary);
-  border-radius: 12px;
-  padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.statCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-hover);
+  padding: 1.5rem !important;
 }
 
 .statIcon {
@@ -198,7 +129,7 @@
   align-items: center;
   justify-content: center;
   background: var(--primary-light);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
 
 .statContent {
@@ -209,29 +140,25 @@
   margin: 0 0 0.25rem 0;
   color: var(--text-secondary);
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .statValue {
   margin: 0;
   color: var(--text-primary);
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .profileCard {
-  background: var(--bg-primary);
-  border-radius: 16px;
-  padding: 2.5rem;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 1px solid var(--border-color);
+  width: 100%;
 }
 
 .sectionTitle {
   margin: 0 0 2rem 0;
   color: var(--text-primary);
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--border-color);
 }
@@ -255,40 +182,36 @@
 }
 
 .formGroup label {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   font-size: 0.95rem;
 }
 
-.formGroup input,
-.formGroup textarea {
-  padding: 0.875rem;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+.textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-size: 1rem;
   font-family: inherit;
+  transition: all var(--transition-fast);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  resize: vertical;
+  min-height: 120px;
 }
 
-.formGroup input:focus:not(.disabled),
-.formGroup textarea:focus {
+.textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  background-color: var(--bg-primary);
 }
 
-.formGroup input.disabled,
-.formGroup textarea.disabled {
+[data-theme="dark"] .textarea {
   background-color: var(--bg-secondary);
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.formGroup textarea {
-  resize: vertical;
-  min-height: 100px;
+  border-color: var(--border-color);
 }
 
 .formGroup small {
@@ -301,45 +224,25 @@
   background-color: rgba(16, 185, 129, 0.1);
   color: #059669;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  font-weight: 500;
-  border: 2px solid rgba(16, 185, 129, 0.3);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .error {
   background-color: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
+  color: var(--danger-hover);
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  font-weight: 500;
-  border: 2px solid rgba(239, 68, 68, 0.3);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .submitBtn {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
   align-self: flex-start;
-}
-
-.submitBtn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-}
-
-.submitBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+  margin-top: 1rem;
 }
 
 .loading {
@@ -347,112 +250,12 @@
   padding: 5rem 2rem;
   color: var(--text-secondary);
   font-size: 1.3rem;
-  font-weight: 500;
-}
-
-.ratingBadge {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.ratingText {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.servicesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.serviceCheckbox {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.serviceCheckbox:hover {
-  border-color: var(--primary-color);
-  background: var(--primary-light);
-}
-
-.serviceCheckbox input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.serviceCheckbox span {
-  color: var(--text-primary);
-  font-size: 0.95rem;
-}
-
-.toggleLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-}
-
-.toggleInput {
-  width: 48px;
-  height: 24px;
-  cursor: pointer;
-}
-
-.toggleText {
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.ratingsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.ratingItem {
-  padding: 1.5rem;
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
-
-.ratingHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.ratingDate {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.reviewText {
-  margin: 0;
-  color: var(--text-primary);
-  line-height: 1.6;
-  font-size: 0.95rem;
+  font-weight: var(--font-weight-medium);
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
-  }
-
-  .profileSection {
-    padding: 1.5rem;
   }
 
   .avatarSection {
@@ -475,13 +278,5 @@
 
   .formRow {
     grid-template-columns: 1fr;
-  }
-
-  .profileCard {
-    padding: 1.5rem;
-  }
-
-  .servicesGrid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

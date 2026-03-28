@@ -351,8 +351,3 @@ export const AppHome = () => {
     </div>
   )
 }
-
-      </div>
-    </div>
-  )
-}

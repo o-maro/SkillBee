@@ -1,6 +1,16 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { 
+  Home, 
+  LayoutDashboard, 
+  User, 
+  Wallet, 
+  MessageSquare, 
+  Sun, 
+  Moon, 
+  LogOut 
+} from 'lucide-react'
 import styles from './Navbar.module.css'
 
 export const Navbar = () => {
@@ -49,31 +59,36 @@ export const Navbar = () => {
             to={homePath} 
             className={`${styles.navLink} ${isHomeActive ? styles.active : ''}`}
           >
-            Home
+            <Home size={18} />
+            <span>Home</span>
           </Link>
           <Link 
             to={dashboardPath}
             className={`${styles.navLink} ${isDashboardActive ? styles.active : ''}`}
           >
-            Dashboard
+            <LayoutDashboard size={18} />
+            <span>Dashboard</span>
           </Link>
           <Link 
             to={profilePath}
             className={`${styles.navLink} ${isProfileActive ? styles.active : ''}`}
           >
-            Profile
+            <User size={18} />
+            <span>Profile</span>
           </Link>
           <Link 
             to={walletPath}
             className={`${styles.navLink} ${isActive('/wallet') ? styles.active : ''}`}
           >
-            Wallet
+            <Wallet size={18} />
+            <span>Wallet</span>
           </Link>
           <Link 
             to="/messages"
             className={`${styles.navLink} ${isActive('/messages') ? styles.active : ''}`}
           >
-            Messages
+            <MessageSquare size={18} />
+            <span>Messages</span>
           </Link>
           <button 
             onClick={toggleTheme} 
@@ -81,10 +96,12 @@ export const Navbar = () => {
             aria-label="Toggle theme"
             title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
           >
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
-          <button onClick={handleSignOut} className={styles.signOutBtn}>
-            Sign Out
+          <button onClick={handleSignOut} className={styles.signOutBtn} aria-label="Sign Out">
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <LogOut size={16} /> Sign Out
+            </span>
           </button>
         </div>
       </div>

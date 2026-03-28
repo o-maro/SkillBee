@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
 import styles from './Support.module.css'
 
 export const Support = () => {
@@ -63,23 +67,23 @@ export const Support = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Support</h1>
-      <p className={styles.subtitle}>Need help? Contact our support team.</p>
+      <PageHeader 
+        title="Support" 
+        subtitle="Need help? Contact our support team directly from your dashboard."
+      />
 
-      <div className={styles.supportCard}>
+      <Card className={styles.supportCard}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="subject">Subject</label>
-            <input
-              id="subject"
-              type="text"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              placeholder="What can we help you with?"
-              required
-            />
-          </div>
+          <Input
+            label="Subject"
+            id="subject"
+            type="text"
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            placeholder="What can we help you with?"
+            required
+          />
 
           <div className={styles.formGroup}>
             <label htmlFor="message">Message</label>
@@ -91,6 +95,7 @@ export const Support = () => {
               rows="6"
               placeholder="Please describe your issue or question..."
               required
+              className={styles.textarea}
             />
           </div>
 
@@ -100,9 +105,9 @@ export const Support = () => {
             </div>
           )}
 
-          <button type="submit" disabled={loading} className={styles.submitBtn}>
+          <Button type="submit" disabled={loading} className={styles.submitBtn}>
             {loading ? 'Sending...' : 'Send Message'}
-          </button>
+          </Button>
         </form>
 
         <div className={styles.contactInfo}>
@@ -111,7 +116,7 @@ export const Support = () => {
           <p>Phone: 1-800-SKILLBEE</p>
           <p>Hours: Monday - Friday, 9 AM - 6 PM EST</p>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './Login.module.css'
 
 export const Login = () => {
@@ -56,55 +60,58 @@ export const Login = () => {
   return (
     <div className={styles.shell}>
       <div className={styles.heroPanel}>
+        <div className={styles.heroOverlay}></div>
+        <img 
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=1200" 
+          alt="Professional working" 
+          className={styles.heroBackground}
+        />
         <div className={styles.heroContent}>
-          <p className={styles.heroBadge}>Welcome back</p>
+          <Badge variant="secondary" className={styles.heroBadge}>Welcome back</Badge>
           <h1>Your next task is waiting</h1>
           <p>
-            Log back in to pick up where you left off. Manage bookings, chat with taskers, and keep projects moving.
+            Log back in to pick up where you left off. Manage bookings, chat with taskers, and keep projects moving securely and efficiently.
           </p>
         </div>
       </div>
+      
       <div className={styles.formPanel}>
-        <div className={styles.formCard}>
+        <Card className={styles.formCard}>
           <h2>Login</h2>
           <p className={styles.subtitle}>We’ve saved your spot.</p>
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.formGroup}>
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-              />
-            </div>
+            <Input
+              label="Email"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
 
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Your secure password"
-                required
-              />
-            </div>
+            <Input
+              label="Password"
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your secure password"
+              required
+            />
 
             {error && <div className={styles.error}>{error}</div>}
 
-            <button type="submit" disabled={loading} className={styles.submitBtn}>
+            <Button type="submit" disabled={loading} className={styles.submitBtn}>
               {loading ? 'Logging in...' : 'Log In'}
-            </button>
+            </Button>
           </form>
 
           <p className={styles.switch}>
             Need an account? <Link to="/signup">Create one</Link>
           </p>
-        </div>
+        </Card>
       </div>
     </div>
   )

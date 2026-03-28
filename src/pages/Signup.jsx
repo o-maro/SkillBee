@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './Signup.module.css'
 
 export const Signup = () => {
@@ -46,8 +50,8 @@ export const Signup = () => {
   return (
     <div className={styles.shell}>
       <div className={styles.formPanel}>
-        <div className={styles.formCard}>
-          <p className={styles.heroBadge}>Join SkillBee</p>
+        <Card className={styles.formCard}>
+          <Badge variant="secondary" className={styles.heroBadge}>Join SkillBee</Badge>
           <h1>Create your account</h1>
           <p className={styles.subtitle}>Get matched with trusted taskers or start offering your skills.</p>
 
@@ -71,67 +75,66 @@ export const Signup = () => {
               </button>
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="fullName">Full Name *</label>
-              <input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Jane Doe"
-                required
-              />
-            </div>
+            <Input
+              label="Full Name *"
+              id="fullName"
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Jane Doe"
+              required
+            />
 
-            <div className={styles.formGroup}>
-              <label htmlFor="email">Email *</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-              />
-            </div>
+            <Input
+              label="Email *"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
 
-            <div className={styles.formGroup}>
-              <label htmlFor="phone">Phone</label>
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
+            <Input
+              label="Phone"
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Optional"
+            />
 
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Create password *</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                required
-                minLength={6}
-              />
-            </div>
+            <Input
+              label="Create password *"
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              required
+              minLength={6}
+            />
 
             {error && <div className={styles.error}>{error}</div>}
 
-            <button type="submit" disabled={loading} className={styles.submitBtn}>
+            <Button type="submit" disabled={loading} className={styles.submitBtn}>
               {loading ? 'Signing up...' : 'Create account'}
-            </button>
+            </Button>
           </form>
 
           <p className={styles.switch}>
             Already have an account? <Link to="/login">Log in</Link>
           </p>
-        </div>
+        </Card>
       </div>
+      
       <div className={styles.heroPanel}>
+        <div className={styles.heroOverlay}></div>
+        <img 
+          src="https://images.unsplash.com/photo-1542034057-0744de4e0afc?auto=format&fit=crop&q=80&w=1200" 
+          alt="Home design project" 
+          className={styles.heroBackground}
+        />
         <div className={styles.heroContent}>
           <h2>Build your home, your way.</h2>
           <p>

@@ -1,0 +1,93 @@
+.backgroundContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.4;
+  border-radius: 50%;
+  animation: floatBlobs 20s infinite ease-in-out alternate;
+}
+
+.blobPrimary {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background-color: var(--primary-light);
+  animation-delay: 0s;
+}
+
+.blobSecondary {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background-color: var(--lavender-light);
+  animation-delay: -5s;
+}
+
+.blobTertiary {
+  top: 40%;
+  left: 60%;
+  width: 40vw;
+  height: 40vw;
+  background-color: var(--primary-lighter);
+  animation-delay: -10s;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .blob {
+  opacity: 0.15;
+}
+
+[data-theme="dark"] .blobPrimary {
+  background-color: var(--primary-dark);
+}
+
+[data-theme="dark"] .blobSecondary {
+  background-color: var(--lavender-accent);
+}
+
+[data-theme="dark"] .blobTertiary {
+  background-color: var(--primary-color);
+}
+
+.glassLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .glassLayer {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+@keyframes floatBlobs {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(5%, -5%) scale(1.05);
+  }
+  66% {
+    transform: translate(-3%, 3%) scale(0.95);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}

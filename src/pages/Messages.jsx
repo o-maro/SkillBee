@@ -10,6 +10,11 @@ import {
   getBookingWithUsers,
 } from '../utils/messagingApi'
 import { formatCurrency } from '../utils/currency'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './Messages.module.css'
 
 export const Messages = () => {
@@ -180,21 +185,26 @@ export const Messages = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Messages</h1>
+      <PageHeader 
+        title="Messages" 
+        subtitle="Chat with clients and taskers regarding your past or active projects."
+      />
 
       {conversations.length === 0 ? (
-        <div className={styles.empty}>
+        <Card className={styles.empty}>
           <p>No conversations yet.</p>
           <p className={styles.emptySubtext}>
             Start a conversation by selecting a tasker for your booking, or wait for a client to
             select you.
           </p>
-        </div>
+        </Card>
       ) : (
-        <div className={styles.messagesLayout}>
+        <Card className={styles.messagesLayout} style={{ padding: 0, overflow: 'hidden' }}>
           {/* Conversations List */}
           <div className={styles.conversationsList}>
-            <h2>Conversations</h2>
+            <div className={styles.listHeader}>
+              <h2>Conversations</h2>
+            </div>
             {conversations.map((conversation) => (
               <div
                 key={conversation.booking.id}
@@ -208,7 +218,7 @@ export const Messages = () => {
                 <div className={styles.conversationHeader}>
                   <h3>{conversation.otherUser.full_name || 'Unknown User'}</h3>
                   {conversation.unreadCount > 0 && (
-                    <span className={styles.unreadBadge}>{conversation.unreadCount}</span>
+                    <Badge variant="primary" className={styles.unreadBadge}>{conversation.unreadCount}</Badge>
                   )}
                 </div>
                 <p className={styles.conversationService}>{conversation.booking.service_type}</p>
@@ -260,7 +270,7 @@ export const Messages = () => {
                           <div className={styles.messageContent}>
                             <p>{message.content}</p>
                             <span className={styles.messageTime}>
-                              {new Date(message.created_at).toLocaleString()}
+                              {new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
                         </div>
@@ -273,21 +283,21 @@ export const Messages = () => {
                 <form onSubmit={handleSendMessage} className={styles.messageForm}>
                   {error && <div className={styles.error}>{error}</div>}
                   <div className={styles.messageInputContainer}>
-                    <input
+                    <Input
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type your message..."
-                      className={styles.messageInput}
                       disabled={sending}
+                      containerClassName={styles.flexGrowInput}
                     />
-                    <button
+                    <Button
                       type="submit"
                       disabled={sending || !newMessage.trim()}
                       className={styles.sendButton}
                     >
                       {sending ? 'Sending...' : 'Send'}
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </>
@@ -297,7 +307,7 @@ export const Messages = () => {
               </div>
             )}
           </div>
-        </div>
+        </Card>
       )}
     </div>
   )

@@ -1,0 +1,62 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  background-color: var(--bg-primary);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input:disabled {
+  background-color: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.errorInput {
+  border-color: var(--danger-color);
+}
+
+.errorInput:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.errorText {
+  color: var(--danger-color);
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+/* Dark mode overrides (minimal needed due to base vars, just fixing inputs) */
+[data-theme="dark"] .input {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}

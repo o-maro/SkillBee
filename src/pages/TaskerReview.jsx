@@ -3,6 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { getSignedUrl } from '../utils/storageApi'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
 import styles from './TaskerReview.module.css'
 
 export const TaskerReview = () => {
@@ -183,6 +187,14 @@ export const TaskerReview = () => {
     }
   }
 
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'approved': return 'success'
+      case 'rejected': return 'danger'
+      default: return 'warning'
+    }
+  }
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -195,26 +207,29 @@ export const TaskerReview = () => {
     return (
       <div className={styles.container}>
         <div className={styles.error}>Verification data not found</div>
-        <button onClick={() => navigate('/admin/dashboard')} className={styles.backBtn}>
+        <Button onClick={() => navigate('/admin/dashboard')} variant="secondary" className={styles.backBtn}>
           Back to Dashboard
-        </button>
+        </Button>
       </div>
     )
   }
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <button onClick={() => navigate('/admin/dashboard')} className={styles.backBtn}>
-          ← Back to Dashboard
-        </button>
-        <h1>Review Tasker Application</h1>
-      </div>
+      <PageHeader 
+        title="Review Tasker Application" 
+        subtitle={`Verifying details for ${user.full_name || 'Tasker'}`}
+        breadcrumbs={
+          <Button variant="outline" onClick={() => navigate('/admin/dashboard')} className={styles.backBtn}>
+            ← Back to Dashboard
+          </Button>
+        }
+      />
 
       {error && <div className={styles.error}>{error}</div>}
 
       <div className={styles.content}>
-        <div className={styles.section}>
+        <Card className={styles.section}>
           <h2>User Information</h2>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
@@ -231,14 +246,14 @@ export const TaskerReview = () => {
             </div>
             <div className={styles.infoItem}>
               <strong>Status:</strong>
-              <span className={`${styles.status} ${styles[verification.status]}`}>
+              <Badge variant={getStatusVariant(verification.status)}>
                 {verification.status}
-              </span>
+              </Badge>
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className={styles.section}>
+        <Card className={styles.section}>
           <h2>Service Information</h2>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
@@ -268,9 +283,9 @@ export const TaskerReview = () => {
               <p>{verification.bio}</p>
             </div>
           )}
-        </div>
+        </Card>
 
-        <div className={styles.section}>
+        <Card className={styles.section}>
           <h2>Documents</h2>
           <div className={styles.documents}>
             <div className={styles.document}>
@@ -305,9 +320,9 @@ export const TaskerReview = () => {
               )}
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className={styles.section}>
+        <Card className={styles.section}>
           <h2>Professional Documents</h2>
           <div className={styles.documents}>
             <div className={styles.document}>
@@ -346,10 +361,10 @@ export const TaskerReview = () => {
               )}
             </div>
           </div>
-        </div>
+        </Card>
 
         {verification.rejection_reason && (
-          <div className={styles.section}>
+          <Card className={styles.section}>
             <h2>Previous Rejection</h2>
             <div className={styles.rejectionBox}>
               <strong>Reason:</strong>
@@ -360,30 +375,32 @@ export const TaskerReview = () => {
                 </p>
               )}
             </div>
-          </div>
+          </Card>
         )}
 
-        <div className={styles.actions}>
+        <Card className={styles.actions}>
           {verification.status !== 'approved' && (
-            <button
+            <Button
+              variant="success"
               onClick={handleApprove}
               disabled={processing}
               className={styles.approveBtn}
             >
               ✅ Approve Tasker
-            </button>
+            </Button>
           )}
 
           {verification.status !== 'rejected' && (
             <>
               {!showRejectForm ? (
-                <button
+                <Button
+                  variant="danger"
                   onClick={() => setShowRejectForm(true)}
                   disabled={processing}
                   className={styles.rejectBtn}
                 >
                   ❌ Reject Tasker
-                </button>
+                </Button>
               ) : (
                 <div className={styles.rejectForm}>
                   <label>
@@ -397,29 +414,29 @@ export const TaskerReview = () => {
                     />
                   </label>
                   <div className={styles.rejectActions}>
-                    <button
+                    <Button
+                      variant="danger"
                       onClick={handleReject}
                       disabled={processing || !rejectionReason.trim()}
-                      className={styles.confirmRejectBtn}
                     >
                       Confirm Rejection
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="outline"
                       onClick={() => {
                         setShowRejectForm(false)
                         setRejectionReason('')
                       }}
                       disabled={processing}
-                      className={styles.cancelBtn}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
             </>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   )

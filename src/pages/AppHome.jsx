@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { formatCurrency } from '../utils/currency'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Input } from '../components/ui/Input'
+import { Badge } from '../components/ui/Badge'
 import styles from './AppHome.module.css'
 
 const featuredServices = [
@@ -52,11 +56,6 @@ export const AppHome = () => {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all') // all, pending, in_progress, completed
 
-  // Debug logging
-  console.log('Auth values:', auth)
-  console.log('Profile:', profile, 'Auth Loading:', authLoading)
-  console.log('Component state:', { loading, tasks: tasks.length, filteredTasks: filteredTasks.length })
-
   const isClient = profile?.role === 'client'
   const isTasker = profile?.role === 'tasker'
   const userName = profile?.full_name || 'User'
@@ -65,13 +64,11 @@ export const AppHome = () => {
 
   const loadTasks = useCallback(async () => {
     if (!profile) {
-      console.log('No profile, skipping task load')
       setLoading(false)
       return
     }
 
     try {
-      console.log('Loading tasks for profile:', profile)
       const isClientRole = profile.role === 'client'
       const isTaskerRole = profile.role === 'tasker'
       let query
@@ -93,13 +90,11 @@ export const AppHome = () => {
           .is('tasker_id', null)
           .order('created_at', { ascending: false })
       } else {
-        console.log('Unknown role:', profile.role)
         setLoading(false)
         return
       }
 
       const { data, error } = await query
-      console.log('Tasks query result:', { data, error })
 
       if (error) throw error
       setTasks(data || [])
@@ -112,8 +107,6 @@ export const AppHome = () => {
   }, [profile])
 
   useEffect(() => {
-    console.log('Auth loading:', authLoading, 'Profile:', profile)
-    
     if (authLoading) {
       setLoading(true)
       return
@@ -171,6 +164,15 @@ export const AppHome = () => {
     }
   }
 
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'pending': return 'warning'
+      case 'in_progress': return 'primary'
+      case 'completed': return 'success'
+      default: return 'neutral'
+    }
+  }
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -181,51 +183,34 @@ export const AppHome = () => {
 
   return (
     <div className={styles.container}>
-      {/* Temporary debug info - you can remove this later */}
-      <div style={{
-        background: '#f8f9fa', 
-        padding: '12px', 
-        marginBottom: '20px', 
-        borderRadius: '8px',
-        border: '1px solid #e9ecef',
-        fontSize: '12px',
-        fontFamily: 'monospace'
-      }}>
-        <strong>Debug Info:</strong><br />
-        Auth Loading: {authLoading ? 'Yes' : 'No'}<br />
-        Profile: {profile ? `Exists (role: ${profile.role})` : 'None'}<br />
-        Tasks Count: {tasks.length}<br />
-        Filtered Tasks Count: {filteredTasks.length}<br />
-        Search Query: "{searchQuery}"<br />
-        Filter: {filter}
-      </div>
-
-      <div className={styles.header}>
-        <div>
-          <h1>Welcome back, {userName}!</h1>
-          <p className={styles.subtitle}>
-            {isClient
-              ? 'Get your first task done with trusted local pros'
-              : 'Find tasks that match your skills'}
-          </p>
+      <Card className={styles.header} style={{ padding: 0 }}>
+        <div className={styles.headerInner}>
+          <div>
+            <h1>Welcome back, {userName}!</h1>
+            <p className={styles.subtitle}>
+              {isClient
+                ? 'Get your first task done with trusted local pros'
+                : 'Find tasks that match your skills'}
+            </p>
+          </div>
+          {isClient && (
+            <Button variant="primary" onClick={() => navigate('/book')}>
+              Book a Task
+            </Button>
+          )}
         </div>
-        {isClient && (
-          <Link to="/book" className={styles.bookBtn}>
-            Book a Task
-          </Link>
-        )}
-      </div>
+      </Card>
 
       <div className={styles.searchSection}>
         <div className={styles.searchBar}>
-          <input
+          <Input
             type="text"
             placeholder="Search tasks by service type, location, or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            containerClassName={styles.flexInputContainer}
             className={styles.searchInput}
           />
-          <span className={styles.searchIcon}>🔍</span>
         </div>
 
         <div className={styles.filters}>
@@ -267,7 +252,7 @@ export const AppHome = () => {
       </div>
 
       {isClient && (
-        <section className={styles.servicesSection}>
+        <Card className={styles.servicesSection}>
           <div className={styles.servicesHeader}>
             <div>
               <h2>Popular services on SkillBee</h2>
@@ -279,22 +264,22 @@ export const AppHome = () => {
           </div>
           <div className={styles.serviceGrid}>
             {featuredServices.map((service) => (
-              <div key={service.title} className={styles.serviceCard}>
+              <div key={service.title} className={styles.serviceItem}>
                 <div className={styles.serviceIcon}>{service.icon}</div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
               </div>
             ))}
           </div>
-        </section>
+        </Card>
       )}
 
-      <div className={styles.tasksSection}>
+      <Card className={styles.tasksSection}>
         <div className={styles.sectionHeader}>
           <h2>
             {isClient ? 'Available Tasks' : 'Tasks Available for You'}
             {filteredTasks.length > 0 && (
-              <span className={styles.taskCount}>({filteredTasks.length})</span>
+              <Badge variant="neutral" className={styles.taskCount}>{filteredTasks.length}</Badge>
             )}
           </h2>
         </div>
@@ -309,18 +294,18 @@ export const AppHome = () => {
                 : 'No tasks available at the moment. Check back later!'}
             </p>
             {isClient && !searchQuery && (
-              <Link to="/book" className={styles.emptyAction}>
+              <Button onClick={() => navigate('/book')}>
                 Get Your First Task Done
-              </Link>
+              </Button>
             )}
           </div>
         ) : (
           <div className={styles.taskGrid}>
             {filteredTasks.map((task) => (
-              <div key={task.id} className={styles.taskCard}>
+              <Card key={task.id} className={styles.taskCard} hoverable style={{ padding: '1.75rem' }}>
                 <div className={styles.taskHeader}>
                   <h3>{task.service_type}</h3>
-                  <span className={styles.budget}>{formatCurrency(task.budget)}</span>
+                  <Badge variant="secondary" className={styles.budget}>{formatCurrency(task.budget)}</Badge>
                 </div>
                 <div className={styles.taskDetails}>
                   <div className={styles.detailItem}>
@@ -341,27 +326,32 @@ export const AppHome = () => {
                   </div>
                 </div>
                 <div className={styles.taskFooter}>
-                  <span className={`${styles.status} ${styles[task.status]}`}>
+                  <Badge variant={getStatusVariant(task.status)}>
                     {task.status.replace('_', ' ')}
-                  </span>
+                  </Badge>
                   {isTasker && task.status === 'pending' && !task.tasker_id && (
-                    <button
+                    <Button
+                      variant="primary"
                       onClick={() => handleAcceptTask(task.id)}
-                      className={styles.acceptBtn}
                     >
                       Accept Task
-                    </button>
+                    </Button>
                   )}
                   {isClient && (
-                    <Link to={`/tasks`} className={styles.viewBtn}>
+                    <Button variant="secondary" onClick={() => navigate(`/tasks`)}>
                       View Details
-                    </Link>
+                    </Button>
                   )}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         )}
+      </Card>
+    </div>
+  )
+}
+
       </div>
     </div>
   )

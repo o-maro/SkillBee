@@ -2,21 +2,24 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  min-height: calc(100vh - 80px);
-  background-color: var(--bg-secondary);
-  transition: background-color 0.3s ease;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .header {
+  border: none;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter)) !important;
+}
+
+.headerInner {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2.5rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
-  border-radius: 16px;
-  box-shadow: 0 4px 12px var(--shadow-color);
-  transition: all 0.3s ease;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
 .header h1 {
@@ -34,36 +37,12 @@
   margin: 0;
   color: var(--text-secondary);
   font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.bookBtn {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  padding: 0.875rem 2rem;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.bookBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  font-weight: var(--font-weight-medium);
 }
 
 .servicesSection {
-  margin-bottom: 2.5rem;
-  background: var(--bg-primary);
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
 }
 
 .servicesHeader {
@@ -72,7 +51,7 @@
   align-items: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .servicesHeader h2 {
@@ -87,18 +66,23 @@
 }
 
 .servicesCta {
-  background: #111827;
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   padding: 0.65rem 1.25rem;
   border-radius: 999px;
   text-decoration: none;
-  font-weight: 600;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: var(--font-weight-semibold);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .servicesCta:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(17, 24, 39, 0.2);
+}
+
+[data-theme="dark"] .servicesCta {
+  background: var(--primary-color);
+  color: white;
 }
 
 .serviceGrid {
@@ -107,18 +91,18 @@
   gap: 1.5rem;
 }
 
-.serviceCard {
+.serviceItem {
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   background: var(--bg-primary);
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-.serviceCard:hover {
+.serviceItem:hover {
   transform: translateY(-4px);
   border-color: var(--primary-color);
-  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .serviceIcon {
@@ -126,20 +110,16 @@
   margin-bottom: 0.75rem;
 }
 
-.serviceCard h3 {
+.serviceItem h3 {
   margin: 0 0 0.5rem 0;
   color: var(--text-primary);
   font-size: 1.1rem;
 }
 
-.serviceCard p {
+.serviceItem p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 0.95rem;
-}
-
-.searchSection {
-  margin-bottom: 2.5rem;
 }
 
 .searchBar {
@@ -147,35 +127,8 @@
   margin-bottom: 1.5rem;
 }
 
-.searchInput {
+.flexInputContainer {
   width: 100%;
-  padding: 1.125rem 3.5rem 1.125rem 1.25rem;
-  border: 2px solid var(--border-color);
-  border-radius: 14px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px var(--primary-light);
-}
-
-.searchInput::placeholder {
-  color: var(--text-tertiary);
-}
-
-.searchIcon {
-  position: absolute;
-  right: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.3rem;
-  pointer-events: none;
-  opacity: 0.6;
 }
 
 .filters {
@@ -188,12 +141,12 @@
 .activeFilter {
   padding: 0.625rem 1.25rem;
   border: 2px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background-color: var(--bg-primary);
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   text-transform: capitalize;
   font-size: 0.95rem;
 }
@@ -201,7 +154,7 @@
 .filterBtn:hover {
   border-color: var(--primary-color);
   color: var(--primary-color);
-  background-color: var(--bg-hover);
+  background-color: var(--bg-secondary);
   transform: translateY(-1px);
 }
 
@@ -213,12 +166,8 @@
 }
 
 .tasksSection {
-  background: var(--bg-primary);
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .sectionHeader {
@@ -229,19 +178,14 @@
   margin: 0;
   color: var(--text-primary);
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
 .taskCount {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  font-weight: 500;
-  background-color: var(--bg-secondary);
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  font-size: 1.1rem !important;
 }
 
 .emptyState {
@@ -253,24 +197,7 @@
   color: var(--text-secondary);
   font-size: 1.2rem;
   margin-bottom: 2rem;
-  font-weight: 500;
-}
-
-.emptyAction {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  padding: 0.875rem 2rem;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.emptyAction:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  font-weight: var(--font-weight-medium);
 }
 
 .taskGrid {
@@ -280,15 +207,9 @@
 }
 
 .taskCard {
-  border: 2px solid var(--border-color);
-  border-radius: 16px;
-  padding: 1.75rem;
-  transition: all 0.3s ease;
-  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
 }
 
 .taskCard::before {
@@ -300,13 +221,7 @@
   height: 4px;
   background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
   transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.taskCard:hover {
-  border-color: var(--primary-color);
-  box-shadow: 0 8px 24px var(--shadow-hover);
-  transform: translateY(-4px);
+  transition: transform var(--transition-fast);
 }
 
 .taskCard:hover::before {
@@ -326,19 +241,13 @@
   margin: 0;
   color: var(--text-primary);
   font-size: 1.35rem;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   flex: 1;
 }
 
 .budget {
-  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
-  color: var(--primary-dark);
-  padding: 0.625rem 1.25rem;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.2rem;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  font-weight: var(--font-weight-bold);
+  font-size: 1.1rem;
 }
 
 .taskDetails {
@@ -356,7 +265,7 @@
 
 .detailLabel {
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   min-width: 90px;
 }
 
@@ -375,88 +284,18 @@
   gap: 1rem;
 }
 
-.status {
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.status.pending {
-  background-color: rgba(251, 191, 36, 0.2);
-  color: #d97706;
-}
-
-.status.assigned {
-  background-color: rgba(139, 92, 246, 0.2);
-  color: #7c3aed;
-}
-
-.status.in_progress {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: #2563eb;
-}
-
-.status.completed {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #059669;
-}
-
-.acceptBtn {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  padding: 0.7rem 1.5rem;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-}
-
-.acceptBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-}
-
-.viewBtn {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 600;
-  padding: 0.7rem 1.5rem;
-  border: 2px solid var(--primary-color);
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  font-size: 0.95rem;
-  background-color: transparent;
-}
-
-.viewBtn:hover {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
 .loading {
   text-align: center;
   padding: 5rem 2rem;
   color: var(--text-secondary);
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
-  .servicesSection {
-    padding: 1.5rem;
+  .headerInner {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   .servicesHeader {
@@ -469,21 +308,6 @@
     text-align: center;
   }
 
-  .header {
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-
-  .header h1 {
-    font-size: 1.75rem;
-  }
-
-  .bookBtn {
-    width: 100%;
-    text-align: center;
-  }
-
   .taskGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -492,15 +316,5 @@
   .taskFooter {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .acceptBtn,
-  .viewBtn {
-    width: 100%;
-    text-align: center;
-  }
-
-  .tasksSection {
-    padding: 1.5rem;
   }
 }

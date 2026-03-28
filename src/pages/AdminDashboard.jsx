@@ -3,6 +3,10 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { getSignedUrl } from '../utils/storageApi'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
 import styles from './AdminDashboard.module.css'
 
 export const AdminDashboard = () => {
@@ -154,6 +158,14 @@ export const AdminDashboard = () => {
           minute: '2-digit',
         })
       : 'N/A'
+      
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'approved': return 'success'
+      case 'rejected': return 'danger'
+      default: return 'warning'
+    }
+  }
 
   /* ===============================
      Loading State
@@ -171,21 +183,21 @@ export const AdminDashboard = () => {
   =============================== */
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p className={styles.subtitle}>Manage tasker verifications</p>
-        </div>
-        <button onClick={handleSignOut} className={styles.signOutBtn}>
-          Sign Out
-        </button>
-      </div>
+      <PageHeader 
+        title="Admin Dashboard" 
+        subtitle="Manage tasker verifications"
+        action={
+          <Button variant="danger" onClick={handleSignOut}>
+            Sign Out
+          </Button>
+        }
+      />
 
       {error && <div className={styles.error}>{error}</div>}
 
       <div className={styles.stats}>
         {['pending', 'approved', 'rejected'].map(status => (
-          <div key={status} className={styles.statCard}>
+          <Card key={status} className={`${styles.statCard} ${styles[`stat${status.charAt(0).toUpperCase() + status.slice(1)}`]}`}>
             <div className={styles.statIcon}>
               {status === 'pending' ? '⏳' : status === 'approved' ? '✅' : '❌'}
             </div>
@@ -193,56 +205,68 @@ export const AdminDashboard = () => {
               <p className={styles.statLabel}>{status}</p>
               <p className={styles.statValue}>{stats[status]}</p>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
-      <div className={styles.filters}>
-        {['all', 'pending', 'approved', 'rejected'].map(f => (
-          <button
-            key={f}
-            className={filter === f ? styles.active : ''}
-            onClick={() => setFilter(f)}
-          >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
-            {f !== 'all' && ` (${stats[f]})`}
-          </button>
-        ))}
+      <div className={styles.filtersSection}>
+        <div className={styles.filters}>
+          {['all', 'pending', 'approved', 'rejected'].map(f => (
+            <button
+              key={f}
+              className={filter === f ? styles.active : ''}
+              onClick={() => setFilter(f)}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {f !== 'all' && ` (${stats[f]})`}
+            </button>
+          ))}
+        </div>
       </div>
 
       {applications.length === 0 ? (
-        <div className={styles.empty}>
+        <Card className={styles.empty}>
           <p>No {filter !== 'all' ? filter : ''} applications found.</p>
-        </div>
+        </Card>
       ) : (
         <div className={styles.applicationsList}>
           {applications.map(app => (
-            <div key={app.id} className={styles.applicationCard}>
+            <Card key={app.id} hoverable className={styles.applicationCard}>
               <Link to={`/admin/review/${app.user_id}`} className={styles.cardLink}>
                 <div className={styles.cardHeader}>
                   <div>
-                    <h3>{app.user?.full_name || 'Unknown User'}</h3>
+                    <h3 className={styles.userName}>{app.user?.full_name || 'Unknown User'}</h3>
                     <p className={styles.email}>{app.user?.email || 'No email'}</p>
                   </div>
-                  <span className={`${styles.status} ${styles[app.status]}`}>
+                  <Badge variant={getStatusVariant(app.status)}>
                     {app.status}
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className={styles.cardBody}>
-                  <p><strong>Service:</strong> {app.service_category || 'N/A'}</p>
-                  <p><strong>National ID:</strong> {app.national_id_number || 'N/A'}</p>
-                  <p><strong>Submitted:</strong> {formatDate(app.created_at)}</p>
+                  <div>
+                    <p className={styles.dataLabel}>Service</p>
+                    <p className={styles.dataValue}>{app.service_category || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className={styles.dataLabel}>National ID</p>
+                    <p className={styles.dataValue}>{app.national_id_number || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className={styles.dataLabel}>Submitted</p>
+                    <p className={styles.dataValue}>{formatDate(app.created_at)}</p>
+                  </div>
                 </div>
               </Link>
 
               <div className={styles.documentsSection}>
-                <button
+                <Button
+                  variant="secondary"
                   onClick={(e) => toggleCardExpansion(app.id, e)}
                   className={styles.toggleDocumentsBtn}
                 >
                   {expandedCard === app.id ? '▼ Hide Documents' : '▶ View Documents'}
-                </button>
+                </Button>
 
                 {expandedCard === app.id && (
                   <div className={styles.documentsGrid}>
@@ -273,7 +297,7 @@ export const AdminDashboard = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

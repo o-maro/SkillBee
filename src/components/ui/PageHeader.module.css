@@ -1,0 +1,57 @@
+.header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.breadcrumbs {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin-bottom: 0.75rem;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .titleRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+}

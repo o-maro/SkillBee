@@ -25,6 +25,7 @@ import { AdminLogin } from './pages/AdminLogin'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { TaskerReview } from './pages/TaskerReview'
 import { AuthCallback } from './pages/AuthCallback'
+import { AbstractBackground } from './components/ui/AbstractBackground'
 import './App.css'
 
 // Central gate that decides what happens when landing on "/"
@@ -279,6 +280,7 @@ const AppRoutes = () => {
 function App() {
   return (
     <BrowserRouter>
+      <AbstractBackground />
       <AppRoutes />
     </BrowserRouter>
   )

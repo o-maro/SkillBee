@@ -2,6 +2,9 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { formatCurrency } from '../utils/currency'
+import { Card } from '../components/ui/Card'
+import { Button } from '../components/ui/Button'
+import { Badge } from '../components/ui/Badge'
 import styles from './Wallet.module.css'
 
 export const Wallet = () => {
@@ -108,9 +111,9 @@ export const Wallet = () => {
 
   return (
     <div className={styles.container}>
-      <section className={styles.hero}>
+      <Card className={styles.hero} style={{ padding: '2.4rem' }}>
         <div>
-          <p className={styles.heroBadge}>Wallet</p>
+          <Badge variant="neutral" className={styles.heroBadge}>Wallet</Badge>
           <h1>Manage your project budget</h1>
           <p>Secure top-ups, crystal-clear history, and instant balance visibility.</p>
         </div>
@@ -118,10 +121,10 @@ export const Wallet = () => {
           <span>Current balance</span>
           <strong>{formatCurrency(wallet?.balance || 0)}</strong>
         </div>
-      </section>
+      </Card>
 
       <section className={styles.quickStats}>
-        <div className={`${styles.quickCard} ${styles.quickAccentPrimary}`}>
+        <Card className={`${styles.quickCard} ${styles.quickAccentPrimary}`}>
           <div>
             <p>Completed Payments</p>
             <strong>
@@ -132,8 +135,8 @@ export const Wallet = () => {
             </strong>
           </div>
           <span>✔︎</span>
-        </div>
-        <div className={`${styles.quickCard} ${styles.quickAccentGrey}`}>
+        </Card>
+        <Card className={`${styles.quickCard} ${styles.quickAccentGrey}`}>
           <div>
             <p>Pending Actions</p>
             <strong>
@@ -144,18 +147,18 @@ export const Wallet = () => {
             </strong>
           </div>
           <span>⏳</span>
-        </div>
-        <div className={`${styles.quickCard} ${styles.quickAccentGreen}`}>
+        </Card>
+        <Card className={`${styles.quickCard} ${styles.quickAccentGreen}`}>
           <div>
             <p>Autopay Ready</p>
             <strong>On</strong>
           </div>
           <span>⚡️</span>
-        </div>
+        </Card>
       </section>
 
       <section className={styles.walletGrid}>
-        <div className={styles.card}>
+        <Card className={styles.card}>
           <div className={styles.cardHeader}>
             <div>
               <h2>Wallet Snapshot</h2>
@@ -173,9 +176,9 @@ export const Wallet = () => {
               <strong>{wallet?.id?.slice(0, 8).toUpperCase()}</strong>
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className={styles.card}>
+        <Card className={styles.card}>
           <div className={styles.cardHeader}>
             <div>
               <h2>Top up wallet</h2>
@@ -196,37 +199,37 @@ export const Wallet = () => {
               />
             </div>
             <div className={styles.topUpActions}>
-              <button type="button" onClick={() => setTopUpAmount('50000')}>
-                +UGX 50,000
-              </button>
-              <button type="button" onClick={() => setTopUpAmount('100000')}>
-                +UGX 100,000
-              </button>
-              <button type="button" onClick={() => setTopUpAmount('250000')}>
-                +UGX 250,000
-              </button>
+              <Button variant="outline" type="button" onClick={() => setTopUpAmount('50000')}>
+                +UGX 50k
+              </Button>
+              <Button variant="outline" type="button" onClick={() => setTopUpAmount('100000')}>
+                +UGX 100k
+              </Button>
+              <Button variant="outline" type="button" onClick={() => setTopUpAmount('250000')}>
+                +UGX 250k
+              </Button>
             </div>
-            <button type="submit" disabled={processing} className={styles.primaryBtn}>
+            <Button variant="primary" type="submit" disabled={processing} className={styles.primaryBtn}>
               {processing ? 'Processing...' : 'Add funds'}
-            </button>
+            </Button>
             {message && (
               <div className={message.includes('success') ? styles.success : styles.error}>
                 {message}
               </div>
             )}
           </form>
-        </div>
+        </Card>
       </section>
 
-      <section className={styles.transactionsSection}>
+      <Card className={styles.transactionsSection}>
         <div className={styles.transactionsHeader}>
           <div>
             <h2>Recent activity</h2>
             <p>A complete log of top-ups, releases, and payouts.</p>
           </div>
-          <button type="button" className={styles.filterButton}>
+          <Button variant="outline" type="button" className={styles.filterButton}>
             Filter ▾
-          </button>
+          </Button>
         </div>
 
         {transactions.length === 0 ? (
@@ -270,8 +273,9 @@ export const Wallet = () => {
             ))}
           </div>
         )}
-      </section>
+      </Card>
     </div>
   )
 }
+
 

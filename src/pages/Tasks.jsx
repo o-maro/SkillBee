@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../utils/supabaseClient'
 import { formatCurrency } from '../utils/currency'
+import { PageHeader } from '../components/ui/PageHeader'
+import { Card } from '../components/ui/Card'
+import { Badge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
 import styles from './Tasks.module.css'
 
 export const Tasks = () => {
@@ -41,77 +45,110 @@ export const Tasks = () => {
     }
   }, [profile, loadTasks])
 
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'pending': return 'warning'
+      case 'in_progress': return 'primary'
+      case 'completed': return 'success'
+      default: return 'neutral'
+    }
+  }
+
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>
+    return <div className={styles.loading}>Loading tasks...</div>
   }
 
   return (
     <div className={styles.container}>
-      <h1>My Tasks</h1>
+      <PageHeader 
+        title="My Tasks" 
+        subtitle="Manage and view the status of all your booked tasks."
+      />
 
-      <div className={styles.filters}>
-        <button
-          className={filter === 'all' ? styles.active : ''}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button
-          className={filter === 'pending' ? styles.active : ''}
-          onClick={() => setFilter('pending')}
-        >
-          Pending
-        </button>
-        <button
-          className={filter === 'in_progress' ? styles.active : ''}
-          onClick={() => setFilter('in_progress')}
-        >
-          In Progress
-        </button>
-        <button
-          className={filter === 'completed' ? styles.active : ''}
-          onClick={() => setFilter('completed')}
-        >
-          Completed
-        </button>
+      <div className={styles.filtersSection}>
+        <div className={styles.filters}>
+          <button
+            className={filter === 'all' ? styles.active : ''}
+            onClick={() => setFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={filter === 'pending' ? styles.active : ''}
+            onClick={() => setFilter('pending')}
+          >
+            Pending
+          </button>
+          <button
+            className={filter === 'in_progress' ? styles.active : ''}
+            onClick={() => setFilter('in_progress')}
+          >
+            In Progress
+          </button>
+          <button
+            className={filter === 'completed' ? styles.active : ''}
+            onClick={() => setFilter('completed')}
+          >
+            Completed
+          </button>
+        </div>
       </div>
 
       {tasks.length === 0 ? (
-        <div className={styles.empty}>
-          <p>No tasks found.</p>
-        </div>
+        <Card className={styles.empty}>
+          <p className={styles.emptyText}>No tasks found.</p>
+          <Button variant="primary" onClick={() => navigate('/book')}>
+            Book a New Task
+          </Button>
+        </Card>
       ) : (
         <div className={styles.taskList}>
           {tasks.map((task) => (
-            <div key={task.id} className={styles.taskCard}>
+            <Card key={task.id} hoverable className={styles.taskCard}>
               <div className={styles.taskHeader}>
                 <h3>{task.service_type}</h3>
-                <span className={`${styles.status} ${styles[task.status]}`}>
-                  {task.status}
-                </span>
+                <Badge variant={getStatusVariant(task.status)}>
+                  {task.status.replace('_', ' ')}
+                </Badge>
               </div>
               <div className={styles.taskDetails}>
-                <p><strong>Budget:</strong> {formatCurrency(task.budget)}</p>
-                <p><strong>Location:</strong> {task.location}</p>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Budget:</span> 
+                  <span className={styles.detailValue}>{formatCurrency(task.budget)}</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Location:</span> 
+                  <span className={styles.detailValue}>{task.location}</span>
+                </div>
                 {task.tasker_id && (
-                  <p><strong>Tasker ID:</strong> {task.tasker_id}</p>
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Tasker ID:</span> 
+                    <span className={styles.detailValue}>{task.tasker_id}</span>
+                  </div>
                 )}
                 {task.notes && (
-                  <p><strong>Notes:</strong> {task.notes}</p>
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Notes:</span> 
+                    <span className={styles.detailValue}>{task.notes}</span>
+                  </div>
                 )}
-                <p><strong>Created:</strong> {new Date(task.created_at).toLocaleDateString()}</p>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Created:</span> 
+                  <span className={styles.detailValue}>{new Date(task.created_at).toLocaleDateString()}</span>
+                </div>
               </div>
               {task.tasker_id && (
                 <div className={styles.taskActions}>
-                  <button
+                  <Button
+                    variant="primary"
                     className={styles.messageButton}
                     onClick={() => navigate('/messages', { state: { bookingId: task.id } })}
                   >
                     💬 Message Tasker
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}

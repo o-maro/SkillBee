@@ -15,6 +15,41 @@ export const Dashboard = () => {
   })
   const [recentTasks, setRecentTasks] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeUserLocation, setActiveUserLocation] = useState(null);
+  const [taskers, setTaskers] = useState([]);
+
+useEffect(() => {
+  navigator.geolocation.getCurrentPosition((position) => {
+    setActiveUserLocation({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      full_name: "You"
+    });
+  });
+}, []);
+
+useEffect(() => {
+  const loadTaskers = async () => {
+    const { data, error } = await supabase
+      .from("users")
+      .select("id, full_name, latitude, longitude, role")
+      .eq("role", "tasker");
+
+    if (error) {
+      console.error("Error loading taskers:", error);
+      return;
+    }
+
+    // Only keep taskers with location
+    const validTaskers = data.filter(
+      (t) => t.latitude && t.longitude
+    );
+
+    setTaskers(validTaskers);
+  };
+
+  loadTaskers();
+}, []);
 
   const loadDashboardData = useCallback(async () => {
     if (!profile) {
@@ -150,7 +185,10 @@ export const Dashboard = () => {
           <p>Find skilled taskers close to your location.</p>
         </div>
 
-        <MapView />
+        <MapView
+          taskers={taskers}
+          activeUserLocation={activeUserLocation}
+        />
       </section>
 
       <section className={styles.activitySection}>

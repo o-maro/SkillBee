@@ -33,7 +33,7 @@ export const ActiveTaskTracker = ({ task, profile, onTaskRefreshRequest }) => {
       const { data } = await getTaskTrackingState(task.id)
       if (data) {
         setTracking(data)
-      } else if (task.status === 'accepted') {
+      } else if (task.status === 'accepted' || task.status === 'assigned') {
         // Mock a pending tracking state visually 
         setTracking({ status: 'pending_start' })
       }

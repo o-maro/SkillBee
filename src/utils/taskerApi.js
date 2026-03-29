@@ -110,7 +110,7 @@ export const acceptTaskRequest = async (bookingId, taskerId) => {
       .from('bookings')
       .update({
         tasker_id: taskerId,
-        status: 'assigned',
+        status: 'accepted',
       })
       .eq('id', bookingId)
       .select()
@@ -288,7 +288,7 @@ export const updateTaskerProfile = async (id, fields) => {
     })
 
     if (Object.keys(taskerFields).length > 0) {
-      const { data: taskerData, error: taskerError } = await supabase
+      const { error: taskerError } = await supabase
         .from('taskers')
         .upsert({
           tasker_id: id,

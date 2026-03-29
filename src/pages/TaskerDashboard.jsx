@@ -37,10 +37,11 @@ export const TaskerDashboard = () => {
       // Categorize tasks logically handling tracking strings safely now mapped internally 
       const upcoming = (bookings || []).filter(
         (task) =>
-          ['pending', 'assigned'].includes(task.status) &&
+          ['pending'].includes(task.status) &&
           task.tasker_id === profile.id
       )
-      const inProgressTrackingStates = ['accepted', 'en_route', 'arrived', 'in_progress']
+      // Both assigned (legacy API) and accepted explicitly mount the ActiveTaskTracker gracefully overting frozen grids
+      const inProgressTrackingStates = ['assigned', 'accepted', 'en_route', 'arrived', 'in_progress']
       const inProgress = (bookings || []).filter(
         (task) => inProgressTrackingStates.includes(task.status) && task.tasker_id === profile.id
       )

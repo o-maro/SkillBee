@@ -31,7 +31,7 @@ export const Tasks = () => {
       if (filter !== 'all') {
         if (filter === 'in_progress') {
            // Tracking triggers dynamically mutate bookings into explicit strings replacing standard in_progress logic.
-           query = query.in('status', ['in_progress', 'en_route', 'arrived'])
+           query = query.in('status', ['in_progress', 'en_route', 'arrived', 'accepted', 'assigned'])
         } else {
            query = query.eq('status', filter)
         }
@@ -168,7 +168,7 @@ export const Tasks = () => {
                   </Button>
                 </div>
                 
-                {['en_route', 'arrived', 'in_progress'].includes(task.status) && (
+                {['accepted', 'assigned', 'en_route', 'arrived', 'in_progress'].includes(task.status) && (
                   <LiveTaskTracker task={task} />
                 )}
             </Card>

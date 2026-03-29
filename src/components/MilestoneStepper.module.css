@@ -1,0 +1,111 @@
+.stepperContainer {
+  padding: 1.25rem;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.horizontalSteps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+/* Gray background line connecting the nodes */
+.horizontalSteps::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+
+.stepNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  flex: 1;
+  position: relative;
+}
+
+.circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+/* When the node represents the active state exactly */
+.stepNode.active .circle {
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2);
+}
+
+/* When the logic evaluates the node successfully fulfilled historically */
+.stepNode.completed .circle {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+/* Add a line specifically colored from the previous node reaching the current node if completed or active */
+.stepNode.completed::before,
+.stepNode.active::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+/* Color filled line based on logic bounds */
+.stepNode.completed::before { background-color: #10b981; }
+.stepNode.active::before { background-color: var(--primary-color); }
+
+/* The very first node shouldn't trace a line extending backwards */
+.stepNode:first-child::before { display: none; }
+
+.label {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+  min-width: 60px;
+}
+
+.stepNode.active .label {
+  color: var(--text-primary, #111827);
+  font-weight: 700;
+}
+
+.stepNode.completed .label {
+  color: #10b981;
+}
+
+/* A checkmark SVG styling helper strictly for fulfilled strings */
+.checkIcon {
+  width: 14px;
+  height: 14px;
+  stroke: white;
+  stroke-width: 3;
+}

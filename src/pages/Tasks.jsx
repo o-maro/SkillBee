@@ -8,6 +8,7 @@ import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { SubmitReviewModal } from '../components/SubmitReviewModal'
+import { LiveTaskTracker } from '../components/LiveTaskTracker'
 import styles from './Tasks.module.css'
 
 export const Tasks = () => {
@@ -28,7 +29,12 @@ export const Tasks = () => {
         .order('created_at', { ascending: false })
 
       if (filter !== 'all') {
-        query = query.eq('status', filter)
+        if (filter === 'in_progress') {
+           // Tracking triggers dynamically mutate bookings into explicit strings replacing standard in_progress logic.
+           query = query.in('status', ['in_progress', 'en_route', 'arrived'])
+        } else {
+           query = query.eq('status', filter)
+        }
       }
 
       const { data, error } = await query
@@ -161,6 +167,10 @@ export const Tasks = () => {
                     💬 Message Tasker
                   </Button>
                 </div>
+                
+                {['en_route', 'arrived', 'in_progress'].includes(task.status) && (
+                  <LiveTaskTracker task={task} />
+                )}
             </Card>
           ))}
         </div>

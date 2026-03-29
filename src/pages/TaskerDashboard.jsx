@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getTaskerBookings, getTaskerRatings } from '../utils/taskerApi'
 import { TaskCard } from '../components/TaskCard'
+import { ActiveTaskTracker } from '../components/ActiveTaskTracker'
 import { RatingStars } from '../components/RatingStars'
 import { formatCurrency } from '../utils/currency'
 import styles from './TaskerDashboard.module.css'
@@ -33,14 +34,15 @@ export const TaskerDashboard = () => {
 
       setRatings(ratingsData || [])
 
-      // Categorize tasks
+      // Categorize tasks logically handling tracking strings safely now mapped internally 
       const upcoming = (bookings || []).filter(
         (task) =>
-          (task.status === 'pending' || task.status === 'accepted' || task.status === 'assigned') &&
+          ['pending', 'assigned'].includes(task.status) &&
           task.tasker_id === profile.id
       )
+      const inProgressTrackingStates = ['accepted', 'en_route', 'arrived', 'in_progress']
       const inProgress = (bookings || []).filter(
-        (task) => task.status === 'in_progress' && task.tasker_id === profile.id
+        (task) => inProgressTrackingStates.includes(task.status) && task.tasker_id === profile.id
       )
       const completed = (bookings || []).filter(
         (task) => task.status === 'completed' && task.tasker_id === profile.id
@@ -84,22 +86,7 @@ export const TaskerDashboard = () => {
     }
   }, [profile, loadDashboardData, authLoading])
 
-  const updateTaskStatus = async (taskId, newStatus) => {
-    try {
-      const { supabase } = await import('../utils/supabaseClient')
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: newStatus })
-        .eq('id', taskId)
-        .eq('tasker_id', profile.id)
 
-      if (error) throw error
-      loadDashboardData()
-    } catch (error) {
-      console.error('Error updating task status:', error)
-      alert('Failed to update task status. Please try again.')
-    }
-  }
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>
@@ -175,7 +162,7 @@ export const TaskerDashboard = () => {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2>Tasks In Progress</h2>
+            <h2>Active Tasks (Tracker)</h2>
           </div>
           {inProgressTasks.length === 0 ? (
             <div className={styles.empty}>
@@ -184,12 +171,11 @@ export const TaskerDashboard = () => {
           ) : (
             <div className={styles.taskGrid}>
               {inProgressTasks.map((task) => (
-                <TaskCard
+                <ActiveTaskTracker
                   key={task.id}
                   task={task}
-                  showActions={true}
-                  showMessage={true}
-                  onComplete={(id) => updateTaskStatus(id, 'completed')}
+                  profile={profile}
+                  onTaskRefreshRequest={loadDashboardData}
                 />
               ))}
             </div>

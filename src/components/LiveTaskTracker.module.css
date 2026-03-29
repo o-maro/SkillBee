@@ -1,0 +1,129 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: #f9fafb;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  border-bottom-left-radius: var(--radius-md, 8px);
+  border-bottom-right-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+.statusHeader {
+  padding: 1rem 1.25rem;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statusText {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.pulsingDot {
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulsingDot::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  animation: pulse 2s infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.mapViewport {
+  height: 250px;
+  width: 100%;
+  position: relative;
+}
+
+.clientMarker {
+  width: 18px;
+  height: 18px;
+  background-color: #111827; 
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.taskerMarkerWrapper {
+  /* THE HACK: Forces Mapbox to gracefully interopolate coordinates over exactly 10 seconds */
+  /* This neatly matches the 10-second backend bandwidth throttle built in Phase 2 */
+  transition: transform 10s linear;
+}
+
+.taskerIcon {
+  width: 24px;
+  height: 24px;
+  background-color: #1e293b; /* slate-800 to match line overlays natively */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Specific UI configurations strictly for distinct boundaries */
+.loadingMap {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(249, 250, 251, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 10;
+  font-size: 0.95rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.toastNotification {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(17, 24, 39, 0.9);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  z-index: 50;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  animation: slideDownFade 0.3s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+  pointer-events: none;
+}
+
+@keyframes slideDownFade {
+  0% { transform: translate(-50%, -20px); opacity: 0; }
+  100% { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+}

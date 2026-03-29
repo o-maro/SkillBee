@@ -1,0 +1,168 @@
+.trackerCard {
+  background: white;
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9fafb;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.serviceTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary, #111827);
+  font-weight: 600;
+}
+
+.clientLocation {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Subtle transitions for status badge */
+.statusBadge.accepted { background-color: #e0f2fe; color: #0284c7; }
+.statusBadge.en_route { background-color: #fef08a; color: #854d0e; }
+.statusBadge.arrived { background-color: #bfdbfe; color: #1e40af; }
+.statusBadge.in_progress { background-color: #e0e7ff; color: #4338ca; }
+.statusBadge.completed { background-color: #dcfce7; color: #166534; }
+
+.mapContainer {
+  height: 300px;
+  width: 100%;
+  position: relative;
+  background-color: #f3f4f6;
+}
+
+.mapLoading {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #6b7280);
+  background-color: rgba(249, 250, 251, 0.8);
+  z-index: 10;
+  font-size: 0.95rem;
+  backdrop-filter: blur(2px);
+}
+
+.controlsRow {
+  padding: 1.25rem;
+  background: white;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.actionBtn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md, 8px);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  font-size: 0.95rem;
+}
+
+.actionBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.startTrackingBtn {
+  background-color: var(--primary-color);
+  color: white;
+}
+.startTrackingBtn:hover { background-color: var(--primary-dark); }
+
+.arrivedBtn {
+  background-color: var(--primary-dark); 
+  color: white;
+}
+.arrivedBtn:hover { background-color: var(--primary-color); }
+
+.startTaskBtn {
+  background-color: var(--lavender-accent); 
+  color: white;
+}
+.startTaskBtn:hover { filter: brightness(0.9); }
+
+.completeBtn {
+  background-color: #10b981; 
+  color: white;
+}
+.completeBtn:hover { background-color: #059669; }
+
+.disabledBtn {
+  background-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.destinationMarker {
+  width: 20px;
+  height: 20px;
+  background-color: #ef4444; /* Red for destination */
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.taskerMarker {
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+/* Subtle radar pulse around tasker marker natively inheriting primary variable */
+.taskerMarker::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  animation: pulse 2s infinite;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}

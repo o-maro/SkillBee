@@ -280,3 +280,27 @@
     grid-template-columns: 1fr;
   }
 }
+
+.lockedServiceBox {
+  background-color: var(--primary-light, #eef2ff);
+  border: 1px solid var(--primary-color, #6366f1);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+
+.lockedIcon {
+  margin-right: 0.5rem;
+}
+
+.lockedServiceText {
+  font-size: 1rem;
+  color: var(--text-primary, #111827);
+}
+
+.lockedDisclaimer {
+  display: block;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

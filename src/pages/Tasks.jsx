@@ -7,6 +7,7 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
+import { SubmitReviewModal } from '../components/SubmitReviewModal'
 import styles from './Tasks.module.css'
 
 export const Tasks = () => {
@@ -15,6 +16,8 @@ export const Tasks = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [taskToReview, setTaskToReview] = useState(null)
 
   const loadTasks = useCallback(async () => {
     try {
@@ -137,8 +140,19 @@ export const Tasks = () => {
                   <span className={styles.detailValue}>{new Date(task.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
-              {task.tasker_id && (
                 <div className={styles.taskActions}>
+                  {task.status === 'completed' && (
+                    <Button
+                      variant="secondary"
+                      className={styles.reviewButton}
+                      onClick={() => {
+                        setTaskToReview(task)
+                        setReviewModalOpen(true)
+                      }}
+                    >
+                      ⭐ Leave Review
+                    </Button>
+                  )}
                   <Button
                     variant="primary"
                     className={styles.messageButton}
@@ -147,11 +161,17 @@ export const Tasks = () => {
                     💬 Message Tasker
                   </Button>
                 </div>
-              )}
             </Card>
           ))}
         </div>
       )}
+      
+      {/* Review Modal */}
+      <SubmitReviewModal 
+        isOpen={reviewModalOpen} 
+        onClose={() => setReviewModalOpen(false)} 
+        task={taskToReview} 
+      />
     </div>
   )
 }

@@ -106,11 +106,32 @@
 }
 
 .taskerCard {
+  transition: all var(--transition-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.taskerCardContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all var(--transition-md);
-  box-shadow: var(--shadow-sm);
+  width: 100%;
+}
+
+.taskerMain {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.taskerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: 80px;
 }
 
 .taskerCard.selected {
@@ -121,16 +142,60 @@
 }
 
 .taskerName {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: var(--font-weight-bold);
 }
 
 .taskerDetail {
-  margin: 0.25rem 0;
+  margin: 0.15rem 0;
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
+.compactStats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.ratingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .ratingBadge {
+  color: #fbbf24;
+}
+
+.tasksCompletedBadge {
+  color: var(--text-secondary);
+}
+
+.moreInfoBtn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s;
+}
+
+.moreInfoBtn:hover {
+  opacity: 0.8;
 }
 
 .checkmark {
@@ -175,5 +240,47 @@
   .formRow {
     grid-template-columns: 1fr;
   }
+}
+
+.taskerHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.taskerName {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.taskerServiceTag {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  background-color: var(--primary-light, #eef2ff);
+  color: var(--primary-dark, #4338ca);
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+.taskerLocationWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0.25rem 0;
+}
+
+.locationIcon {
+  color: var(--text-secondary, #6b7280);
+  flex-shrink: 0;
+}
+
+.distanceBadge {
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
 }
 

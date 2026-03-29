@@ -249,7 +249,7 @@ export const TaskerProfile = () => {
         is_available: formData.is_available,
       }
 
-      const { data, error } = await updateTaskerProfile(profile.id, updateFields)
+      const { error } = await updateTaskerProfile(profile.id, updateFields)
       if (error) throw error
 
       await loadProfile(profile.id)
@@ -457,19 +457,33 @@ export const TaskerProfile = () => {
 
           <div className={styles.formGroup}>
             <label>Services Offered</label>
-            <div className={styles.servicesGrid}>
-              {SERVICE_TYPES.map((service) => (
-                <label key={service} className={styles.serviceCheckbox}>
-                  <input
-                    type="checkbox"
-                    checked={formData.services_offered.includes(service)}
-                    onChange={() => handleServiceToggle(service)}
-                  />
-                  <span>{service}</span>
-                </label>
-              ))}
-            </div>
-            <small>Select all services you offer</small>
+            {profile?.verification_status === 'approved' ? (
+              <div className={styles.lockedServiceBox} title="Your service is verified and cannot be changed natively.">
+                 <span className={styles.lockedIcon}>🔒</span>
+                 <span className={styles.lockedServiceText}>
+                   Verified Service: <strong>{formData.services_offered?.[0] || 'Pending Verification'}</strong>
+                 </span>
+                 <p className={styles.lockedDisclaimer}>
+                   Your service category has been verified by the administration.
+                 </p>
+              </div>
+            ) : (
+              <>
+                <div className={styles.servicesGrid}>
+                  {SERVICE_TYPES.map((service) => (
+                    <label key={service} className={styles.serviceCheckbox}>
+                      <input
+                        type="checkbox"
+                        checked={formData.services_offered.includes(service)}
+                        onChange={() => handleServiceToggle(service)}
+                      />
+                      <span>{service}</span>
+                    </label>
+                  ))}
+                </div>
+                <small>Select all services you offer</small>
+              </>
+            )}
           </div>
 
           <div className={styles.formGroup}>

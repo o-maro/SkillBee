@@ -1,0 +1,240 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: var(--bg-primary, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #eaeaea);
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-primary, #ffffff);
+  z-index: 10;
+}
+
+.headerContent {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-light, #eef2ff);
+  color: var(--primary-dark, #4338ca);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.titleInfo h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary, #111827);
+}
+
+.credentialsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.serviceTag, .location {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #4b5563);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.closeBtn:hover {
+  color: var(--text-primary, #111827);
+}
+
+.body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.loadingSpinner, .loadingText {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.statBox {
+  background-color: var(--bg-secondary, #f9fafb);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-color, #eaeaea);
+}
+
+.statValues {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.starIcon { color: #f59e0b; }
+.taskIcon { color: #10b981; }
+.reviewIcon { color: #3b82f6; }
+
+.section {
+  margin-top: 1.5rem;
+}
+
+.section h3 {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary, #111827);
+  border-bottom: 1px solid var(--border-color, #eaeaea);
+  padding-bottom: 0.5rem;
+}
+
+.bioText {
+  color: var(--text-secondary, #4b5563);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reviewItem {
+  background-color: var(--bg-secondary, #f9fafb);
+  padding: 1rem;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border-color, #eaeaea);
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.reviewerName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary, #111827);
+}
+
+.reviewDate {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.starFilled {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+.starEmpty {
+  color: #d1d5db;
+}
+
+.reviewText {
+  color: var(--text-secondary, #4b5563);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.emptyReviews {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+  background-color: var(--bg-secondary, #f9fafb);
+  border: none;
+}

@@ -129,28 +129,16 @@ export const acceptTaskRequest = async (bookingId, taskerId) => {
  */
 export const getTaskerRatings = async (taskerId) => {
   try {
-    // Get ratings where tasker_id matches
-    // Note: ratings table references task_id from tasks table
-    // We'll need to join with bookings to get ratings for this tasker
-    const { data: bookings, error: bookingsError } = await supabase
-      .from('bookings')
-      .select('id')
-      .eq('tasker_id', taskerId)
-      .eq('status', 'completed')
-
-    if (bookingsError) throw bookingsError
-
-    const bookingIds = bookings?.map((b) => b.id) || []
-
-    if (bookingIds.length === 0) {
-      return { data: [], error: null }
-    }
-
-    // Get ratings - assuming ratings.task_id can reference bookings.id
-    // If your schema uses tasks table, you may need to adjust this
     const { data: ratings, error: ratingsError } = await supabase
       .from('ratings')
-      .select('*')
+      .select(`
+        *,
+        client:users (
+          id,
+          full_name,
+          avatar_url
+        )
+      `)
       .eq('tasker_id', taskerId)
       .order('created_at', { ascending: false })
 

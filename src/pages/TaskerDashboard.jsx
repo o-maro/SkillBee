@@ -140,7 +140,7 @@ export const TaskerDashboard = () => {
       <div className={styles.sections}>
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2>Upcoming / Scheduled Tasks</h2>
+            <h2>Upcoming Tasks</h2>
             <Link to="/task-requests" className={styles.viewAllLink}>
               View all requests →
             </Link>
@@ -163,7 +163,7 @@ export const TaskerDashboard = () => {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2>Active Tasks (Tracker)</h2>
+            <h2>In Progress</h2>
           </div>
           {inProgressTasks.length === 0 ? (
             <div className={styles.empty}>

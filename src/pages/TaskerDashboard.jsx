@@ -7,6 +7,7 @@ import { supabase } from '../utils/supabaseClient'
 import { TaskCard } from '../components/TaskCard'
 import { RatingStars } from '../components/RatingStars'
 import { formatCurrency } from '../utils/currency'
+import { ActiveTaskTracker } from '../components/ActiveTaskTracker'
 import styles from './TaskerDashboard.module.css'
 
 export const TaskerDashboard = () => {
@@ -226,13 +227,11 @@ export const TaskerDashboard = () => {
           ) : (
             <div className={styles.taskGrid}>
               {inProgressTasks.map((task) => (
-                <TaskCard
+                <ActiveTaskTracker
                   key={task.id}
                   task={task}
-                  showActions={true}
-                  showMessage={true}
-                  onStartInProgress={(id) => updateTaskStatus(id, 'in_progress')}
-                  onComplete={(id) => updateTaskStatus(id, 'completed')}
+                  profile={profile}
+                  onTaskRefreshRequest={loadDashboardData}
                 />
               ))}
             </div>

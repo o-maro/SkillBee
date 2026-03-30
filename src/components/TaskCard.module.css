@@ -58,6 +58,15 @@
   border: 1px solid rgba(37, 99, 235, 0.4);
 }
 
+.status.assigned,
+.status.en_route,
+.status.arrived,
+.statusActiveFallback {
+  background-color: rgba(37, 99, 235, 0.15);
+  color: #1d4ed8;
+  border: 1px solid rgba(37, 99, 235, 0.4);
+}
+
 .status.in_progress {
   background-color: rgba(37, 99, 235, 0.15);
   color: #1d4ed8;
@@ -125,6 +134,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1rem;
   padding-top: 1rem;
@@ -168,6 +178,29 @@
   background: rgba(239, 68, 68, 0.1);
   border-color: #ef4444;
   color: #dc2626;
+}
+
+.startBtn {
+  flex: 1;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.startBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.startBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .messageAction {

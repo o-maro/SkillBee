@@ -3,7 +3,23 @@ import { RatingStars } from './RatingStars'
 import { formatCurrency } from '../utils/currency'
 import styles from './TaskCard.module.css'
 
-export const TaskCard = ({ task, showRating = false, showActions = false, showMessage = false, onAccept, onDecline, onComplete, disabled = false }) => {
+/** Active pipeline: can move work to in_progress from early states. */
+const STATUSES_CAN_START = ['accepted', 'assigned']
+
+/** Tasker-side active states where marking complete is appropriate (matches dashboard categorization). */
+const STATUSES_CAN_MARK_COMPLETE = ['accepted', 'assigned', 'en_route', 'arrived', 'in_progress']
+
+export const TaskCard = ({
+  task,
+  showRating = false,
+  showActions = false,
+  showMessage = false,
+  onAccept,
+  onDecline,
+  onStartInProgress,
+  onComplete,
+  disabled = false,
+}) => {
   const navigate = useNavigate()
   const formatDate = (dateString) => {
     if (!dateString) return 'Not scheduled'
@@ -34,7 +50,9 @@ export const TaskCard = ({ task, showRating = false, showActions = false, showMe
           )}
         </div>
         {task.status && (
-          <span className={`${styles.status} ${styles[task.status]}`}>
+          <span
+            className={`${styles.status} ${styles[task.status] || styles.statusActiveFallback}`}
+          >
             {task.status.replace('_', ' ')}
           </span>
         )}
@@ -75,6 +93,7 @@ export const TaskCard = ({ task, showRating = false, showActions = false, showMe
             <>
               {onAccept && (
                 <button
+                  type="button"
                   onClick={() => onAccept(task.id)}
                   className={styles.acceptBtn}
                   disabled={disabled}
@@ -84,6 +103,7 @@ export const TaskCard = ({ task, showRating = false, showActions = false, showMe
               )}
               {onDecline && (
                 <button
+                  type="button"
                   onClick={() => onDecline(task.id)}
                   className={styles.declineBtn}
                   disabled={disabled}
@@ -93,8 +113,24 @@ export const TaskCard = ({ task, showRating = false, showActions = false, showMe
               )}
             </>
           )}
-          {task.status === 'in_progress' && onComplete && (
-            <button onClick={() => onComplete(task.id)} className={styles.completeBtn}>
+          {onStartInProgress &&
+            STATUSES_CAN_START.includes(task.status) && (
+              <button
+                type="button"
+                onClick={() => onStartInProgress(task.id)}
+                className={styles.startBtn}
+                disabled={disabled}
+              >
+                Start task
+              </button>
+            )}
+          {onComplete && STATUSES_CAN_MARK_COMPLETE.includes(task.status) && (
+            <button
+              type="button"
+              onClick={() => onComplete(task.id)}
+              className={styles.completeBtn}
+              disabled={disabled}
+            >
               Mark Complete
             </button>
           )}

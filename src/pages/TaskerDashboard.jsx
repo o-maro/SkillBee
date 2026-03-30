@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { getTaskerBookings, getTaskerRatings } from '../utils/taskerApi'
+import { declineTaskRequest, getTaskerBookings, getTaskerRatings } from '../utils/taskerApi'
+import { categorizeTaskerBookings } from '../utils/taskerDashboardTasks'
+import { supabase } from '../utils/supabaseClient'
 import { TaskCard } from '../components/TaskCard'
 import { RatingStars } from '../components/RatingStars'
 import { formatCurrency } from '../utils/currency'
@@ -33,20 +35,7 @@ export const TaskerDashboard = () => {
 
       setRatings(ratingsData || [])
 
-      // Categorize tasks logically handling valid test parameters
-      const upcoming = (bookings || []).filter(
-        (task) =>
-          task.status === 'pending' &&
-          task.tasker_id === profile.id
-      )
-      const inProgress = (bookings || []).filter(
-        (task) => 
-          ['accepted', 'assigned', 'en_route', 'arrived', 'in_progress'].includes(task.status) && 
-          task.tasker_id === profile.id
-      )
-      const completed = (bookings || []).filter(
-        (task) => task.status === 'completed' && task.tasker_id === profile.id
-      )
+      const { upcoming, inProgress, completed } = categorizeTaskerBookings(bookings)
 
       // Add ratings to completed tasks
       const completedWithRatings = completed.map((task) => {
@@ -86,9 +75,32 @@ export const TaskerDashboard = () => {
     }
   }, [profile, loadDashboardData, authLoading])
 
+  useEffect(() => {
+    if (!profile?.id) return
+
+    const channel = supabase
+      .channel(`tasker-dashboard-bookings-${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookings',
+          filter: `tasker_id=eq.${profile.id}`,
+        },
+        () => {
+          loadDashboardData()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [profile?.id, loadDashboardData])
+
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      const { supabase } = await import('../utils/supabaseClient')
       const { error } = await supabase
         .from('bookings')
         .update({ status: newStatus })
@@ -100,6 +112,17 @@ export const TaskerDashboard = () => {
     } catch (error) {
       console.error('Error updating task status:', error)
       alert('Failed to update task status. Please try again.')
+    }
+  }
+
+  const handleDeclineOfferedTask = async (taskId) => {
+    try {
+      const { error } = await declineTaskRequest(taskId, profile.id)
+      if (error) throw error
+      loadDashboardData()
+    } catch (error) {
+      console.error('Error declining task:', error)
+      alert('Failed to decline task. Please try again.')
     }
   }
 
@@ -175,6 +198,7 @@ export const TaskerDashboard = () => {
                   showActions={true} 
                   showMessage={true} 
                   onAccept={(id) => updateTaskStatus(id, 'accepted')}
+                  onDecline={handleDeclineOfferedTask}
                 />
               ))}
             </div>
@@ -197,6 +221,7 @@ export const TaskerDashboard = () => {
                   task={task}
                   showActions={true}
                   showMessage={true}
+                  onStartInProgress={(id) => updateTaskStatus(id, 'in_progress')}
                   onComplete={(id) => updateTaskStatus(id, 'completed')}
                 />
               ))}

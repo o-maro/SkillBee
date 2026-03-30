@@ -29,12 +29,22 @@ export const TaskerDashboard = () => {
       const { data: bookings, error: bookingsError } = await getTaskerBookings(profile.id)
       if (bookingsError) throw bookingsError
 
-      // Get ratings
-      const { data: ratingsData, error: ratingsError } = await getTaskerRatings(profile.id)
-      if (ratingsError) throw ratingsError
+      // Get ratings, but do not let ratings failure break task loading
+      let ratingsData = []
 
-      setRatings(ratingsData || [])
-
+      try {
+        const { data, error } = await getTaskerRatings(profile.id)
+        if (error) {
+          console.error('Error fetching tasker ratings:', error)
+        } else {
+          ratingsData = data || []
+        }
+      } catch (ratingsFetchError) {
+        console.error('Error fetching tasker ratings:', ratingsFetchError)
+      }
+      
+      setRatings(ratingsData)
+      
       const { upcoming, inProgress, completed } = categorizeTaskerBookings(bookings)
 
       // Add ratings to completed tasks

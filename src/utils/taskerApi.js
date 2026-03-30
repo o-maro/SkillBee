@@ -133,7 +133,7 @@ export const getTaskerRatings = async (taskerId) => {
       .from('ratings')
       .select(`
         *,
-        client:users (
+        client:users!ratings_client_id_fkey (
           id,
           full_name,
           avatar_url

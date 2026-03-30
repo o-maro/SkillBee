@@ -18,6 +18,8 @@ export const Book = () => {
     service_type: '',
     budget: '',
     location: '',
+    latitude: null,
+    longitude: null,
     notes: '',
   })
   const [availableTaskers, setAvailableTaskers] = useState([])
@@ -26,6 +28,31 @@ export const Book = () => {
   const [error, setError] = useState('')
   const [searching, setSearching] = useState(false)
   const [detailModalTaskerId, setDetailModalTaskerId] = useState(null)
+
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser')
+      return
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+  
+        setFormData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          location: 'Current Location'
+        }))
+      },
+      (error) => {
+        console.error(error)
+        setError('Failed to get your location')
+      }
+    )
+  }
 
   const handleChange = (e) => {
     setFormData({
@@ -99,14 +126,21 @@ export const Book = () => {
       return
     }
 
+    if (!formData.latitude || !formData.longitude) {
+      setError('Please use your current location so taskers can navigate to you')
+      setLoading(false)
+      return
+    }
+
     try {
       const bookingData = {
         client_id: profile.id,
         service_type: formData.service_type,
         budget: parseFloat(formData.budget),
         location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         notes: formData.notes || null,
-        // When a tasker is selected, create as pending so they can accept/decline
         status: 'pending',
         tasker_id: selectedTasker || null,
       }
@@ -171,6 +205,15 @@ export const Book = () => {
               step="0.01"
               required
             />
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleUseMyLocation}
+              style={{ marginTop: '8px' }}
+            >
+              Use My Current Location
+            </Button>
 
             <Input
               label="Location *"

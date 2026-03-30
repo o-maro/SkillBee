@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { 
@@ -16,7 +16,6 @@ import styles from './Navbar.module.css'
 export const Navbar = () => {
   const { profile, user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const navigate = useNavigate()
   const location = useLocation()
 
   const handleSignOut = async () => {
@@ -38,13 +37,13 @@ export const Navbar = () => {
 
   // Determine correct routes based on role
   const homePath = isClient ? "/app-home" : isTasker ? "/tasker-home" : "/app-home"
-  const dashboardPath = isClient ? "/dashboard" : isTasker ? "/tasker-dashboard" : "/dashboard"
+  const dashboardPath = isClient ? "/dashboard" : isTasker ? "/tasker-home" : "/dashboard"
   const profilePath = isClient ? "/profile" : isTasker ? "/tasker-profile" : "/profile"
   const walletPath = "/wallet"
 
   const isActive = (path) => location.pathname === path
   const isHomeActive = isActive('/app-home') || isActive('/tasker-home')
-  const isDashboardActive = isActive('/dashboard') || isActive('/tasker-dashboard')
+  const isDashboardActive = isActive('/dashboard') || isActive('/tasker-home')
   const isProfileActive = isActive('/profile') || isActive('/tasker-profile')
 
   return (

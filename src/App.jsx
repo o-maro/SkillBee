@@ -9,7 +9,6 @@ import { AppHome } from './pages/AppHome'
 import { Signup } from './pages/Signup'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
-import { TaskerDashboard } from './pages/TaskerDashboard'
 import { TaskerHome } from './pages/TaskerHome'
 import { TaskRequests } from './pages/TaskRequests'
 import { TaskerWallet } from './pages/TaskerWallet'
@@ -70,7 +69,7 @@ const AppGate = () => {
     if (verificationStatus !== 'approved') {
       return <Navigate to="/tasker-onboarding" replace />
     }
-    return <Navigate to="/tasker-dashboard" replace />
+    return <Navigate to="/tasker-home" replace />
   }
 
   // Client (and any other fallback roles) go to client dashboard
@@ -137,26 +136,16 @@ const AppRoutes = () => {
         element={
           <RequireAuth>
             <RequireRole allowedRoles={['tasker']}>
-              <Navbar />
-              <TaskerHome />
-            </RequireRole>
-          </RequireAuth>
-        }
-      />
-
-      <Route
-        path="/tasker-dashboard"
-        element={
-          <RequireAuth>
-            <RequireRole allowedRoles={['tasker']}>
               <RequireVerification>
                 <Navbar />
-                <TaskerDashboard />
+                <TaskerHome />
               </RequireVerification>
             </RequireRole>
           </RequireAuth>
         }
       />
+
+
 
       <Route
         path="/task-requests"

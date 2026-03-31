@@ -11,6 +11,7 @@ import {
   Moon, 
   LogOut 
 } from 'lucide-react'
+import logoUrl from '../assets/logo.png'
 import styles from './Navbar.module.css'
 
 export const Navbar = () => {
@@ -51,7 +52,7 @@ export const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <Link to={homePath} className={styles.logo}>
-          <span className={styles.logoIcon}>🐝</span>
+          <img src={logoUrl} alt="SkillBee Logo" className={styles.logoImage} />
           SkillBee
         </Link>
         <div className={styles.links}>

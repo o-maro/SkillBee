@@ -32,11 +32,10 @@
   letter-spacing: -0.02em;
 }
 
-.logo span.logoIcon {
-  color: var(--primary-color);
-  font-size: 1.75rem;
-  display: flex;
-  align-items: center;
+.logoImage {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo:hover {

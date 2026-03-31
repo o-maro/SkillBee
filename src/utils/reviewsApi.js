@@ -22,15 +22,30 @@ export const submitReview = async (bookingId, taskerId, clientId, rating, review
       throw new Error(canReviewResponse.data.reason || 'You cannot review this task.')
     }
 
+    // 1.5 Fetch the necessary related task record to fulfill the foreign key constraint
+    const { data: relatedTask, error: taskFetchError } = await supabase
+      .from('tasks')
+      .select('task_id')
+      .eq('client_id', clientId)
+      .eq('tasker_id', taskerId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (taskFetchError) {
+      console.warn('Error fetching related task for review:', taskFetchError)
+    }
+
     // 2. Submit the review
     const { data, error } = await supabase
       .from('ratings')
       .insert({
         booking_id: bookingId,
+        task_id: relatedTask ? relatedTask.task_id : null,
         tasker_id: taskerId,
         client_id: clientId,
-        rating: rating,
-        review_text: reviewText
+        score: rating,
+        review: reviewText
       })
       .select()
       .single()
@@ -54,7 +69,7 @@ export const getTaskerReviews = async (taskerId) => {
       .from('ratings')
       .select(`
         *,
-        client:users (
+        client:users!ratings_client_id_fkey (
           id,
           full_name,
           avatar_url
@@ -135,8 +150,9 @@ export const checkCanReview = async (bookingId, clientId) => {
     // 2. Check if a review already exists
     const { data: existingReview, error: reviewError } = await supabase
       .from('ratings')
-      .select('id')
+      .select('rating_id')
       .eq('booking_id', bookingId)
+      .eq('client_id', clientId)
       .maybeSingle()
 
     if (reviewError) throw reviewError

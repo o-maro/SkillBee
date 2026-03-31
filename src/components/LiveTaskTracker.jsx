@@ -7,6 +7,7 @@ import { MilestoneStepper } from './MilestoneStepper'
 import styles from './LiveTaskTracker.module.css'
 
 export const LiveTaskTracker = ({ task }) => {
+  console.log('LIVE TASK TRACKER MOUNTED', task)
   const [trackerData, setTrackerData] = useState(null)
   const [routeGeoJSON, setRouteGeoJSON] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -23,8 +24,8 @@ export const LiveTaskTracker = ({ task }) => {
     : null
 
   const [viewState, setViewState] = useState({
-    latitude: task.latitude || 0,
-    longitude: task.longitude || 0,
+    latitude: task.latitude || 0.3476,
+    longitude: task.longitude || 32.5825,
     zoom: 13
   })
 
@@ -128,6 +129,10 @@ export const LiveTaskTracker = ({ task }) => {
 
   return (
     <div className={styles.container}>
+
+      <div style={{ background: 'yellow', color: 'black', padding: '8px', marginBottom: '8px', fontWeight: 'bold' }}>
+        LIVE TASK TRACKER IS RENDERING
+      </div>
       
       {/* Absolute Toast Dropdown Component rendering linearly native when populated */}
       {notification && (
@@ -146,10 +151,13 @@ export const LiveTaskTracker = ({ task }) => {
 
       <MilestoneStepper currentStatus={status} />
 
-      <div className={styles.mapViewport}>
-        {(!taskerLocation || !clientLocation) && (
+      <div 
+        className={styles.mapViewport}
+        style={{ width: '100%', height: '360px', position: 'relative', borderRadius: '16px', overflow: 'hidden' }}
+      >
+        {!taskerLocation && (
           <div className={styles.loadingMap}>
-            Waiting for Tasker GPS Ping...
+            Waiting for tasker live location...
           </div>
         )}
 
@@ -158,6 +166,7 @@ export const LiveTaskTracker = ({ task }) => {
           onMove={(evt) => setViewState(evt.viewState)}
           mapStyle="mapbox://styles/mapbox/light-v11" // Lighter map visually for Client side cleanly
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+          style={{ width: '100%', height: '100%' }}
         >
           {/* Static Client Target */}
           {clientLocation && (

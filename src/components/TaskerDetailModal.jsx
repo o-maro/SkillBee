@@ -146,7 +146,7 @@ export const TaskerDetailModal = ({ isOpen, onClose, taskerId, taskerBaseInfo })
                 {!loading && reviews.length > 0 && (
                   <div className={styles.reviewsList}>
                     {reviews.map((review) => (
-                      <div key={review.id} className={styles.reviewItem}>
+                      <div key={review.rating_id} className={styles.reviewItem}>
                         <div className={styles.reviewHeader}>
                           <span className={styles.reviewerName}>
                             {review.client?.full_name || 'Anonymous User'}
@@ -162,12 +162,12 @@ export const TaskerDetailModal = ({ isOpen, onClose, taskerId, taskerBaseInfo })
                             <Star 
                               key={i} 
                               size={14} 
-                              className={i < review.rating ? styles.starFilled : styles.starEmpty} 
+                              className={i < review.score ? styles.starFilled : styles.starEmpty} 
                             />
                           ))}
                         </div>
-                        {review.review_text && (
-                          <p className={styles.reviewText}>{review.review_text}</p>
+                        {review.review && (
+                          <p className={styles.reviewText}>{review.review}</p>
                         )}
                       </div>
                     ))}

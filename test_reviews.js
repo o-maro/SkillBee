@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 async function testRatingsTable() {
   console.log('Testing if ratings table exists...')
-  const { data, error } = await supabase.from('ratings').select('id').limit(1)
+  const { data, error } = await supabase.from('ratings').select('rating_id').limit(1)
   
   if (error) {
     if (error.code === '42P01') {

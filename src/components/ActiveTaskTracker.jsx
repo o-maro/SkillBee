@@ -19,8 +19,8 @@ export const ActiveTaskTracker = ({ task, profile, onTaskRefreshRequest }) => {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
   const [viewState, setViewState] = useState({
-    latitude: task.latitude || 0,
-    longitude: task.longitude || 0,
+    latitude: task.latitude || 0.3476,
+    longitude: task.longitude || 32.5825,
     zoom: 13
   })
 
@@ -153,7 +153,10 @@ export const ActiveTaskTracker = ({ task, profile, onTaskRefreshRequest }) => {
       <MilestoneStepper currentStatus={status} />
 
       {/* Embedded Map Visual */}
-      <div className={styles.mapContainer}>
+      <div 
+        className={styles.mapContainer}
+        style={{ width: '100%', height: '360px', position: 'relative', borderRadius: '16px', overflow: 'hidden' }}
+      >
         {status === 'pending_start' && (
           <div className={styles.mapLoading}>
             Tap "Start Tracking" to initialize route guidance.
@@ -165,6 +168,7 @@ export const ActiveTaskTracker = ({ task, profile, onTaskRefreshRequest }) => {
           onMove={(evt) => setViewState(evt.viewState)}
           mapStyle="mapbox://styles/mapbox/navigation-day-v1"
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+          style={{ width: '100%', height: '100%' }}
         >
           {/* Client Destination Marker */}
           {task.latitude && task.longitude && (

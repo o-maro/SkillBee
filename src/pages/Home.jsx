@@ -8,6 +8,7 @@ import {
   ShieldCheck, 
   Star 
 } from 'lucide-react'
+import logoUrl from '../assets/logo.png'
 import styles from './Home.module.css'
 
 export const Home = () => {
@@ -16,7 +17,7 @@ export const Home = () => {
       <header className={styles.header}>
         <div className={styles.nav}>
           <div className={styles.logo}>
-            <span className={styles.logoIcon}>🐝</span>
+            <img src={logoUrl} alt="SkillBee Logo" className={styles.logoImage} />
             SkillBee
           </div>
           <div className={styles.authLinks}>
@@ -138,7 +139,7 @@ export const Home = () => {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.logo}>
-            <span className={styles.logoIcon}>🐝</span>
+            <img src={logoUrl} alt="SkillBee Logo" className={styles.logoImage} />
             SkillBee
           </div>
           <p>&copy; 2026 SkillBee Inc. All rights reserved.</p>
